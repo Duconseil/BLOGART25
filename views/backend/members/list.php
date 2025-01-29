@@ -26,7 +26,7 @@ $membres = sql_select("MEMBRE", "*");
                             <td><?php echo $membre['nomMemb']; ?></td>
                             <td><?php echo $membre['prenomMemb']; ?></td>
                             <td>
-                                <a href="edit.php?numMemb=<?php echo $membre['numMemb']; ?>" class="btn btn-primary">Edit</a>
+                                <a href="edit.php?numMemb=<?php echo $membre['numMemb']; ?>" class="btn btn-primary">Editpitdc</a>
                                 <a href="delete.php?numMemb=<?php echo $membre['numMemb']; ?>" class="btn btn-danger">Delete</a>
                             </td>
                         </tr>
