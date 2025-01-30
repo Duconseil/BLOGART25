@@ -1,18 +1,17 @@
 <?php
 include '../../../header.php';
 
-// Récupération des thématiques depuis la base de données
+// Récupération des thématiques et des mots-clés depuis la base de données
 $thematiques = sql_select('THEMATIQUE', '*');
+$motsCles = sql_select('MOTCLE', '*');
 ?>
 
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <!-- Titre de la page -->
             <h1>Création d'un article</h1>
         </div>
         <div class="col-md-12">
-            <!-- Formulaire pour la création d'un article -->
             <form action="<?php echo ROOT_URL . '/api/articles/create.php' ?>" method="post" enctype="multipart/form-data">
                 <!-- Champ pour le titre de l'article -->
                 <div class="form-group">
@@ -76,13 +75,25 @@ $thematiques = sql_select('THEMATIQUE', '*');
                 <div class="form-group">
                     <label for="numThem">Thématique</label>    
                     <select class="form-select" name="numThem">
-                        <!-- Boucle pour afficher toutes les thématiques disponibles -->
                         <?php foreach ($thematiques as $thematique) : ?>
                             <option value="<?php echo $thematique['numThem']; ?>">
                                 <?php echo $thematique['libThem']; ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
+                </div>
+
+                <!-- Liste des mots-clés -->
+                <div class="form-group">
+                    <label for="numMotCle">Mots-clés</label>    
+                    <div class="list-group" id="motCleList">
+                        <?php foreach ($motsCles as $motCle) : ?>
+                            <div class="list-group-item list-group-item-action motCle-item" data-id="<?php echo $motCle['numMotCle']; ?>">
+                                <?php echo $motCle['libMotCle']; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <input type="hidden" name="numMotCle" id="selectedMotCles" value="" />
                 </div>
                 <br />
                 <!-- Bouton pour soumettre le formulaire et créer l'article -->
@@ -94,3 +105,36 @@ $thematiques = sql_select('THEMATIQUE', '*');
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const motCleItems = document.querySelectorAll(".motCle-item");
+    const selectedMotClesInput = document.getElementById("selectedMotCles");
+    
+    motCleItems.forEach(item => {
+        item.addEventListener("click", function() {
+            this.classList.toggle("selected");
+            updateSelectedMotCles();
+        });
+    });
+    
+    function updateSelectedMotCles() {
+        let selectedMotCles = [];
+        document.querySelectorAll(".motCle-item.selected").forEach(item => {
+            selectedMotCles.push(item.getAttribute("data-id"));
+        });
+        selectedMotClesInput.value = selectedMotCles.join(",");
+    }
+});
+</script>
+
+<style>
+.motCle-item {
+    cursor: pointer;
+    user-select: none;
+}
+.motCle-item.selected {
+    background-color: #007bff;
+    color: white;
+}
+</style>

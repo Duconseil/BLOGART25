@@ -1,5 +1,6 @@
 <?php
 include '../../../header.php';
+
 ?>
 
 <!-- Bootstrap form to create a new keyword -->
@@ -24,3 +25,4 @@ include '../../../header.php';
         </div>
     </div>
 </div>
+
