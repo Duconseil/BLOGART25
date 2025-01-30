@@ -16,8 +16,7 @@ $articles = sql_select("article INNER JOIN thematique ON article.numThem = thema
                     <tr>
                         <!-- En-têtes des colonnes de la table -->
                         <th>Id</th>
-                        <th>Date création</th>
-                        <th>Date mise à jour</th>
+                        <th>Date</th>
                         <th>Titre</th>
                         <th>Chapeau</th>
                         <th>Accroche</th>
@@ -33,10 +32,9 @@ $articles = sql_select("article INNER JOIN thematique ON article.numThem = thema
                             <!-- Affichage des données des articles dans chaque ligne de la table -->
                             <td><?php echo ($article['numArt']); ?></td>
                             <td><?php echo ($article['dtCreaArt']); ?></td>
-                            <td><?php echo ($article['dtMajArt']); ?></td>
                             <td><?php echo ($article['libTitrArt']); ?></td>
-                            <td><?php echo (substr($article['libChapoArt'], 0, 100) . '...'); // Affiche les 100 premiers caractères du chapeau ?></td>
-                            <td><?php echo (substr($article['parag1Art'], 0, 150) . '...'); // Affiche les 150 premiers caractères du paragraphe 1 ?></td>
+                            <td><?php echo (substr($article['libChapoArt'], 0, 100) . '[...]'); // Affiche les 100 premiers caractères du chapeau ?></td>
+                            <td><?php echo (substr($article['parag1Art'], 0, 150) . '[...]'); // Affiche les 150 premiers caractères du paragraphe 1 ?></td>
                             <td><?php echo ($article['libThem']); ?></td>
                             <!-- Affichage de l'image de l'article avec un chemin dynamique -->
                             <td><img src="<?php echo ROOT_URL . '/src/uploads/' . str_replace('.jpg', '.png', $article['urlPhotArt'])?>" alt="Description de l'image" style="max-width: 600px; height: auto;"></td>
@@ -58,6 +56,5 @@ $articles = sql_select("article INNER JOIN thematique ON article.numThem = thema
 <br>
 
 <?php
-// Inclusion du fichier de pied de page qui contient la partie footer
 include '../../../footer.php'; 
 ?>

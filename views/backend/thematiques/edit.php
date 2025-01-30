@@ -19,7 +19,6 @@ if (isset($_GET['numThem'])) {
             <h1>Modification Thématique</h1>
         </div>
         <div class="col-md-12">
-            <!-- Form to update a thematique -->
             <form action="<?php echo ROOT_URL . '/api/thematiques/update.php'; ?>" method="post">
                 <div class="form-group">
                     <label for="libThem">Nom de la thématique</label>

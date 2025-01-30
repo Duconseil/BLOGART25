@@ -1,7 +1,6 @@
 <?php
 include '../../../header.php';
 
-// Load all thematiques
 $thematiques = sql_select("THEMATIQUE", "*");
 ?>
 
