@@ -81,7 +81,7 @@ if (isset($_GET['numArt'])) {
                     <!-- Message d'avertissement pour prévenir l'utilisateur de la suppression définitive -->
                     <p style="color:red"><i><strong>Attention : </strong>La suppression de cet article sera définitive.</i></p>
                     <!-- Bouton pour confirmer la suppression -->
-                    <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+                    <button type="submit" class="btn btn-danger">Confirmer delete</button>
                 </div>
             </form>
         </div>

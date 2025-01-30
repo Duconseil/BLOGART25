@@ -132,7 +132,7 @@ if(isset($_GET['numArt'])){
             
             <!-- Bouton pour soumettre le formulaire et confirmer les modifications -->
             <div class="form-group mt-2">
-                <button type="submit" class="btn btn-primary">Confirmer modification ?</button>
+                <button type="submit" class="btn btn-primary">Confirmer update ?</button>
             </div>
         </form>
         </div>
