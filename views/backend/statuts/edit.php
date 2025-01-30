@@ -1,9 +1,14 @@
 <?php
 include '../../../header.php';
 
-if(isset($_GET['numStat'])){
+if (isset($_GET['numStat'])) {
     $numStat = $_GET['numStat'];
-    $libStat = sql_select("STATUT", "libStat", "numStat = $numStat")[0]['libStat'];
+    $result = sql_select("STATUT", "libStat", "numStat = $numStat");
+
+    $libStat = !empty($result) ? html_entity_decode($result[0]['libStat'], ENT_QUOTES, 'UTF-8') : '';
+} else {
+    $numStat = '';
+    $libStat = '';
 }
 ?>
 
@@ -13,16 +18,16 @@ if(isset($_GET['numStat'])){
             <h1>Modification Statut</h1>
         </div>
         <div class="col-md-12">
-            <!-- Form to create a new statut -->
-            <form action="<?php echo ROOT_URL . '/api/statuts/update.php' ?>" method="post">
+            <!-- Form to update a statut -->
+            <form action="<?php echo ROOT_URL . '/api/statuts/update.php'; ?>" method="post">
                 <div class="form-group">
                     <label for="libStat">Nom du statut</label>
-                    <input id="numStat" name="numStat" class="form-control" style="display: none" type="text" value="<?php echo($numStat); ?>" readonly="readonly" />
-                    <input id="libStat" name="libStat" class="form-control" type="text" value="<?php echo($libStat); ?>"/>
+                    <input id="numStat" name="numStat" class="form-control" style="display: none" type="text" value="<?php echo $numStat; ?>" readonly="readonly" />
+                    <input id="libStat" name="libStat" class="form-control" type="text" value="<?php echo $libStat; ?>"/>
                 </div>
                 <br />
                 <div class="form-group mt-2">
-                    <a href="list.php" class="btn btn-primary">List</a>
+                    <a href="list.php" class="btn btn-primary">Liste</a>
                     <button type="submit" class="btn btn-success">Confirmer update ?</button>
                 </div>
             </form>
