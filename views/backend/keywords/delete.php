@@ -41,6 +41,10 @@ if (isset($_GET['numMotCle'])) {
                     <a href="list.php" class="btn btn-primary">Liste</a>
                     <button type="submit" class="btn btn-danger" <?php echo ($delete == 0) ? : ''; ?>>Confirmer delete ?</button>
                 </div>
+                <div class="form-group mt-2">
+                    <!-- Message d'avertissement pour prévenir l'utilisateur de la suppression définitive -->
+                    <p style="color:red"><i><strong>Attention : </strong>La suppression de cet article sera définitive.</i></p>
+                </div>
             </form>
         </div>
     </div>
