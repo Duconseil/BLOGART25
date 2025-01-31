@@ -1,6 +1,14 @@
 <?php
 include '../../../header.php';
 
+
+$errorMessage = '';
+// Vérification de l'existence d'une erreur dans l'URL
+if (isset($_GET['error'])) {
+    if ($_GET['error'] == 'empty') {
+        $errorMessage = '<div class="alert alert-danger">Le mot-clé ne peut pas être vide.</div>';
+    }
+}
 ?>
 
 <!-- Bootstrap form to create a new keyword -->
@@ -10,6 +18,7 @@ include '../../../header.php';
             <h1>Création nouveau Mot-clé</h1>
         </div>
         <div class="col-md-12">
+            <?php echo $errorMessage; ?> <!-- Affichage du message d'erreur si nécessaire -->
             <!-- Form to create a new keyword -->
             <form action="<?php echo ROOT_URL . '/api/keywords/create.php' ?>" method="post">
                 <div class="form-group">
@@ -25,4 +34,6 @@ include '../../../header.php';
         </div>
     </div>
 </div>
+
+
 

@@ -22,7 +22,7 @@ if(isset($_GET['numArt'])){
     $parag3Art = $articleData['parag3Art'];
     $libConclArt = $articleData['libConclArt'];
     $urlPhotArt = $articleData['urlPhotArt'];
-    $numThem = $articleData['numThem'];
+    $numThem = $articleData['numThem'];  // Thématique actuelle de l'article
     
     $articleMotsCles = sql_select("MOTCLEARTICLE", "numMotCle", "numArt = $numArt");
     $selectedMotCles = array_column($articleMotsCles, 'numMotCle');
@@ -104,9 +104,9 @@ if(isset($_GET['numArt'])){
                 <!-- Sélecteur pour choisir la thématique de l'article -->
                 <div class="form-group">
                     <label for="numThem">Thématique</label>    
-                    <select class="form-select" name="numThem">
+                    <select class="form-select" name="numThem" id="numThem">
                         <?php foreach ($thematiques as $thematique) : ?>
-                            <option value="<?php echo $thematique['numThem']; ?>">
+                            <option value="<?php echo $thematique['numThem']; ?>" <?php echo $thematique['numThem'] == $numThem ? 'selected' : ''; ?>>
                                 <?php echo $thematique['libThem']; ?>
                             </option>
                         <?php endforeach; ?>

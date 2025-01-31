@@ -4,6 +4,15 @@ require_once '../../functions/ctrlSaisies.php';
 
 $libThem = ctrlSaisies($_POST['libThem']);
 
-sql_insert('THEMATIQUE', 'libThem', "'$libThem'");
+// Vérification si le champ est vide
+if (empty($libThem)) {
+    header('Location: ../../views/backend/thematiques/create.php?error=empty');
+    exit;
+}
+
+// Insertion de la thématique
+sql_insert('thematiques', 'libThem', "'$libThem'");
 
 header('Location: ../../views/backend/thematiques/list.php');
+exit;
+?>
