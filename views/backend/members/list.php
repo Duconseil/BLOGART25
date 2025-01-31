@@ -21,12 +21,12 @@ foreach ($statuts as $statut) {
             <h1>Membres</h1>
             <table class="table table-striped">
                 <thead>
-                    <tr>
+                <tr>
                         <th>Id</th>
-                        <th>Nom</th>
                         <th>Prénom</th>
+                        <th>Nom</th>
                         <th>Pseudo</th>
-                        <th>Email</th>
+                        <th>eMail</th>
                         <th>Accord RGPD</th>
                         <th>Statut</th>
                         <th>Actions</th>

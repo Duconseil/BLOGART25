@@ -6,12 +6,12 @@ $libThem = ctrlSaisies($_POST['libThem']);
 
 // Vérification si le champ est vide
 if (empty($libThem)) {
-    header('Location: ../../views/backend/thematiques/create.php?error=empty');
+    header('Location: ../../views/backend/thematique/create.php?error=empty');
     exit;
 }
 
 // Insertion de la thématique
-sql_insert('thematiques', 'libThem', "'$libThem'");
+sql_insert('THEMATIQUE', 'libThem', "'$libThem'");
 
 header('Location: ../../views/backend/thematiques/list.php');
 exit;
