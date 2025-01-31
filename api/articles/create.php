@@ -13,9 +13,10 @@ $parag2Art = isset($_POST['parag2Art']) ? ctrlSaisies($_POST['parag2Art']) : '';
 $libSsTitr2Art = isset($_POST['libSsTitr2Art']) ? ctrlSaisies($_POST['libSsTitr2Art']) : '';
 $parag3Art = isset($_POST['parag3Art']) ? ctrlSaisies($_POST['parag3Art']) : '';
 $libConclArt = isset($_POST['libConclArt']) ? ctrlSaisies($_POST['libConclArt']) : '';
+$numMotCle = isset($_POST['numMotCle']) ? ctrlSaisies($_POST['numMotCle']) : '';
 
+var_dump($numMotCle);
 // Numéro de l'article
-$numArt = isset($_POST['numArt']) ? ctrlSaisies($_POST['numArt']) : 0;
 
 // Numéro du thème
 $numThem = isset($_POST['numThem']) ? ctrlSaisies($_POST['numThem']) : 0;
@@ -32,8 +33,12 @@ if (isset($_FILES['urlPhotArt'])) {
 }
 
 // Insertion dans la base de données
-sql_insert('ARTICLE', 'libTitrArt, libChapoArt, libAccrochArt, parag1Art, libSsTitr1Art, parag2Art, libSsTitr2Art, parag3Art, libConclArt, numArt, numThem, urlPhotArt', 
-"'$libTitrArt', '$libChapoArt', '$libAccrochArt', '$parag1Art', '$libSsTitr1Art', '$parag2Art', '$libSsTitr2Art', '$parag3Art', '$libConclArt', '$numArt', '$numThem', '$urlPhotArt'");
+sql_insert('ARTICLE', 'libTitrArt, libChapoArt, libAccrochArt, parag1Art, libSsTitr1Art, parag2Art, libSsTitr2Art, parag3Art, libConclArt, numThem, urlPhotArt' , 
+"'$libTitrArt', '$libChapoArt', '$libAccrochArt', '$parag1Art', '$libSsTitr1Art', '$parag2Art', '$libSsTitr2Art', '$parag3Art', '$libConclArt', '$numThem', '$urlPhotArt'");
+
+sql_insert('MOTCLEARTICLE', 'numMotCle', 
+"'$numMotCle'");
+
 
 // Redirection après l'insertion
 header('Location: ../../views/backend/articles/list.php');

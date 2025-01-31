@@ -4,9 +4,6 @@ ini_set("display_errors", 1);
 
 // Inclus les configurations
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
-
-date_default_timezone_set('UTC+1');
-
 // Fonction pour obtenir les données de la requête et les sécuriser
 function getPostData($keys) {
     $data = [];

@@ -9,6 +9,26 @@ if (isset($_GET['numArt'])) {
     $articles = sql_select("ARTICLE A LEFT JOIN THEMATIQUE T ON A.numThem = T.numThem", "A.*, T.libThem", "A.numArt = $numArt");
     $article = $articles[0] ?? null;
 }
+
+// Suppression de l'article si la demande est reçue via POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['numArt'])) {
+        // Récupère l'ID de l'article depuis le formulaire
+        $numArtToDelete = intval($_POST['numArt']);
+        
+        // Effectuer la suppression de l'article dans la base de données
+        $deleteSuccess = sql_delete("ARTICLE", "numArt = $numArtToDelete");
+
+        if ($deleteSuccess) {
+            // Si la suppression est réussie, redirige vers la liste des articles
+            header("Location: list.php?message=Article supprimé avec succès");
+            exit;
+        } else {
+            // Si la suppression échoue, affiche un message d'erreur
+            $errorMessage = "Erreur lors de la suppression de l'article.";
+        }
+    }
+}
 ?>
 
 <div class="container">
@@ -18,7 +38,7 @@ if (isset($_GET['numArt'])) {
         </div>
         <div class="col-md-12">
             <?php if ($article): ?>
-            <form action="<?php echo ROOT_URL . '/api/articles/delete.php' ?>" method="post">
+            <form action="" method="post">
                 <div class="form-group">
                     <input id="numArt" name="numArt" class="form-control" style="display: none" type="text" value="<?php echo htmlspecialchars($numArt); ?>" readonly />
                     <?php 
@@ -52,6 +72,9 @@ if (isset($_GET['numArt'])) {
             </form>
             <?php else: ?>
                 <p style="color:red">Article introuvable.</p>
+            <?php endif; ?>
+            <?php if (isset($errorMessage)): ?>
+                <p style="color:red"><?php echo htmlspecialchars($errorMessage); ?></p>
             <?php endif; ?>
         </div>
     </div>

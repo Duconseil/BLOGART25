@@ -2,19 +2,14 @@
 include '../../../header.php';
 
 session_start();
-
 require_once '../../../functions/ctrlSaisies.php';
 
-// Vérifie si un identifiant d'article (numArt) a été transmis via l'URL
 if(isset($_GET['numArt'])){
-    // Récupère le numéro de l'article depuis l'URL
     $numArt = $_GET['numArt'];
     
-    // Récupère toutes les thématiques disponibles dans la base de données
     $thematiques = sql_select('THEMATIQUE', '*');
     $motsCles = sql_select('MOTCLE', '*');
     
-    // Récupère les différentes parties de l'article
     $articleData = sql_select("ARTICLE", "*", "numArt = $numArt")[0];
 
     $libTitrArt = $articleData['libTitrArt'];
@@ -28,6 +23,9 @@ if(isset($_GET['numArt'])){
     $libConclArt = $articleData['libConclArt'];
     $urlPhotArt = $articleData['urlPhotArt'];
     $numThem = $articleData['numThem'];
+    
+    $articleMotsCles = sql_select("MOTCLEARTICLE", "numMotCle", "numArt = $numArt");
+    $selectedMotCles = array_column($articleMotsCles, 'numMotCle');
 }
 ?>
 
@@ -38,14 +36,11 @@ if(isset($_GET['numArt'])){
         </div>
         <div class="col-md-12">
         <form action="<?php echo ROOT_URL . '/api/articles/update.php?numArt=' . $numArt ?>" method="post" enctype="multipart/form-data">
-            
-            <!-- Champs existants -->
             <div class="form-group">
                 <label for="libTitrArt">Titre</label>
                 <input id="libTitrArt" name="libTitrArt" class="form-control" type="text" value="<?php echo $libTitrArt; ?>" />
             </div>
             <br />
-            
             <div class="form-group">
                 <label for="libChapoArt">Chapeau</label>
                 <input id="libChapoArt" name="libChapoArt" class="form-control" type="text" value="<?php echo $libChapoArt; ?>" />
@@ -91,36 +86,48 @@ if(isset($_GET['numArt'])){
                 <label for="libConclArt">Conclusion</label>
                 <textarea id="libConclArt" name="libConclArt" class="form-control"><?php echo $libConclArt; ?></textarea>
             </div>
-            
+
+            <!-- Affiche l'image actuelle de l'article -->
             <div class="form-group">
-                <label for="numThem">Thématique</label>    
-                <select class="form-select" name="numThem">
-                    <?php 
-                    foreach ($thematiques as $thematique) : 
-                        $selected = ($thematique['numThem'] == $numThem) ? 'selected' : ''; 
-                    ?>
-                        <option value="<?php echo $thematique['numThem']; ?>" <?php echo $selected; ?>>
-                            <?php echo $thematique['libThem']; ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+                <p>Image actuelle</p>
+                <img width="500px" src="<?php echo ROOT_URL . '/src/uploads/' . $urlPhotArt  ?>">
+                
+                <!-- Permet à l'utilisateur de changer l'image -->
+                <label for="urlPhotArt">Modifier l'image</label>
+
             </div>
+                <!-- Champ pour ajouter une image à l'article -->
+                <div class="form-group">
+                    <label for="urlPhotArt">Ajouter une image</label>
+                    <input type="file" name="urlPhotArt" class="form-control" id="urlPhotArt" accept="image/*">
+                </div>
+                <!-- Sélecteur pour choisir la thématique de l'article -->
+                <div class="form-group">
+                    <label for="numThem">Thématique</label>    
+                    <select class="form-select" name="numThem">
+                        <?php foreach ($thematiques as $thematique) : ?>
+                            <option value="<?php echo $thematique['numThem']; ?>">
+                                <?php echo $thematique['libThem']; ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
             <div class="form-group">
                 <label for="numMotCle">Mots-clés</label>    
                 <div class="list-group" id="motCleList">
                     <?php foreach ($motsCles as $motCle) : ?>
-                        <div class="list-group-item list-group-item-action motCle-item" data-id="<?php echo $motCle['numMotCle']; ?>">
+                        <div class="list-group-item list-group-item-action motCle-item <?php echo in_array($motCle['numMotCle'], $selectedMotCles) ? 'selected' : ''; ?>" data-id="<?php echo $motCle['numMotCle']; ?>">
                             <?php echo $motCle['libMotCle']; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>
-                <input type="hidden" name="numMotCle" id="selectedMotCles" value="" />
+                <input type="hidden" name="numMotCle" id="selectedMotCles" value="<?php echo implode(',', $selectedMotCles); ?>" />
             </div>
-
             <div class="form-group mt-2">
-                <button type="submit" class="btn btn-primary">Confirmer modification ?</button>
-            </div>
+                    <a href="list.php" class="btn btn-primary">Liste</a>
+                    <button type="submit" class="btn btn-success">Confirmer update ?</button>
+                </div>
         </form>
         </div>
     </div>
