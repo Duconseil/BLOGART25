@@ -12,21 +12,25 @@ $numMemb = $_GET['numMemb'];
 // Récupération des informations du membre depuis la base de données
 $membres = sql_select("membre INNER JOIN statut ON membre.numStat = statut.numStat", "*", "numMemb = $numMemb");
 
+// Récupérer tous les statuts existants
+$statuts = sql_select("statut", "*"); // Cette requête récupère tous les statuts
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupérer les données du formulaire
     $prenom = $_POST['prenom'];
     $nom = $_POST['nom'];
     $password = $_POST['password'];
     $email = $_POST['email'];
+    $statut = $_POST['statut'];  // Récupérer le statut sélectionné
 
     // Vérifier les données du formulaire avant de procéder à la mise à jour
     if (!empty($password)) {
         // Si un mot de passe est fourni, on le hache (utilisation de password_hash pour plus de sécurité)
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $update_query = "prenomMemb = '$prenom', nomMemb = '$nom', eMailMemb = '$email', passMemb = '$hashedPassword'";
+        $update_query = "prenomMemb = '$prenom', nomMemb = '$nom', eMailMemb = '$email', passMemb = '$hashedPassword', numStat = '$statut'";
     } else {
         // Si aucun mot de passe, on ne met à jour que les autres informations
-        $update_query = "prenomMemb = '$prenom', nomMemb = '$nom', eMailMemb = '$email'";
+        $update_query = "prenomMemb = '$prenom', nomMemb = '$nom', eMailMemb = '$email', numStat = '$statut'";
     }
 
     // Exécution de la requête SQL de mise à jour
@@ -108,7 +112,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="form-group">
                 <label for="statut">Statut</label>
-                <input type="text" class="form-control" name="statut" id="statut" value="<?php echo $membres[0]['libStat']; ?>" readonly>
+                <select class="form-control" name="statut" id="statut" required>
+                    <?php foreach ($statuts as $statut_item) : ?>
+                        <option value="<?php echo $statut_item['numStat']; ?>" <?php echo ($membres[0]['numStat'] == $statut_item['numStat']) ? 'selected' : ''; ?>>
+                            <?php echo $statut_item['libStat']; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div class="form-group">
