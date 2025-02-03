@@ -83,19 +83,28 @@ $motsCles = sql_select('MOTCLE', '*');
                     </select>
                 </div>
 
-                <!-- Liste des mots-clés -->
+                <!-- Choix des mots-clés -->
                 <div class="form-group">
-                    <label for="numMotCle">Mots-clés</label>    
-                    <div class="list-group" id="motCleList">
-                        <?php foreach ($motsCles as $motCle) : ?>
-                            <div class="list-group-item list-group-item-action motCle-item" data-id="<?php echo $motCle['numMotCle']; ?>">
-                                <?php echo $motCle['libMotCle']; ?>
-                            </div>
-                        <?php endforeach; ?>
+                    <label>Choisissez les mots-clés liés à l'article :</label>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <select name="addMotCle" id="addMotCle" class="form-control" size="5">
+                                <?php
+                                $result = sql_select('MOTCLE');
+                                foreach ($result as $req) {
+                                    echo '<option id="mot" value="' . $req['numMotCle'] . '">' . $req['libMotCle'] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <select id="newMotCle" name="motCle[]" class="form-control" size="5" multiple>
+                            </select>
+                        </div>
                     </div>
-                    <input type="hidden" name="numMotCle" id="selectedMotCles" value="" />
                 </div>
                 <br />
+
                 <!-- Bouton pour soumettre le formulaire et créer l'article -->
                 <div class="form-group mt-2">
                     <a href="list.php" class="btn btn-primary">List</a>
@@ -108,23 +117,27 @@ $motsCles = sql_select('MOTCLE', '*');
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    const motCleItems = document.querySelectorAll(".motCle-item");
-    const selectedMotClesInput = document.getElementById("selectedMotCles");
-    
-    motCleItems.forEach(item => {
-        item.addEventListener("click", function() {
-            this.classList.toggle("selected");
-            updateSelectedMotCles();
-        });
+    const addMotCle = document.getElementById('addMotCle');
+    const newMotCle = document.getElementById('newMotCle');
+
+    addMotCle.addEventListener('click', (e) => {
+        if (e.target.tagName !== "OPTION") {
+            return;
+        }
+        e.target.setAttribute('selected', true);
+        newMotCle.appendChild(e.target);
     });
-    
-    function updateSelectedMotCles() {
-        let selectedMotCles = [];
-        document.querySelectorAll(".motCle-item.selected").forEach(item => {
-            selectedMotCles.push(item.getAttribute("data-id"));
-        });
-        selectedMotClesInput.value = selectedMotCles.join(",");
-    }
+
+    newMotCle.addEventListener('click', (e) => {
+        if (e.target.tagName !== "OPTION") {
+            return;
+        }
+        e.stopPropagation();
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        e.target.setAttribute('selected', false);
+        addMotCle.appendChild(e.target);
+    });
 });
 </script>
 
