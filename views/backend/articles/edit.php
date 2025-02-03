@@ -90,8 +90,8 @@ if(isset($_GET['numArt'])){
                 </div>
                 <br>
 
- <!-- Choix des mots-clés -->
- <div class="form-group">
+<!-- Choix des mots-clés -->
+<div class="form-group">
                     <label>Choisissez les mots-clés liés à l'article :</label>
                     <div class="row">
                         <div class="col-md-5">
