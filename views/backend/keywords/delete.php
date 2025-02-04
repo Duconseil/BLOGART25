@@ -2,6 +2,8 @@
 
 include '../../../header.php';
 $delete = 0;
+$message = "";
+
 // Vérifie si le paramètre 'numMotCle' est présent dans l'URL
 if (isset($_GET['numMotCle'])) {
     // Récupère le numéro du mot clé depuis l'URL
@@ -15,7 +17,12 @@ if (isset($_GET['numMotCle'])) {
     $hasArticles = sql_select("MOTCLEARTICLE", "COUNT(*) as count", "numMotCle = $numMotCle")[0]['count'];
 
     // Si des articles sont associés, la suppression est interdite (delete = 0), sinon elle est autorisée (delete = 1)
-    $delete = ($hasArticles > 0) ? 0 : 1;
+    if ($hasArticles > 0) {
+        $delete = 0;
+        $message = "Ce mot clé est associé à des articles et ne peut pas être supprimé.";
+    } else {
+        $delete = 1;
+    }
 } else {
     $numMotCle = '';
     $libMotCle = '';
@@ -28,6 +35,11 @@ if (isset($_GET['numMotCle'])) {
         <div class="col-md-12">
             <h1>Suppression Mot Clé</h1>
         </div>
+        <?php if (!empty($message)) : ?>
+            <div class="col-md-12">
+                <div class="alert alert-danger" role="alert"> <?php echo $message; ?> </div>
+            </div>
+        <?php endif; ?>
         <div class="col-md-12">
             <!-- Form to delete a keyword -->
             <form action="<?php echo ROOT_URL . '/api/keywords/delete.php' ?>" method="post">
@@ -39,7 +51,7 @@ if (isset($_GET['numMotCle'])) {
                 <input type="hidden" name="numMotCle" value="<?php echo htmlspecialchars($numMotCle, ENT_QUOTES, 'UTF-8'); ?>" />
                 <div class="form-group mt-2">
                     <a href="list.php" class="btn btn-primary">Liste</a>
-                    <button type="submit" class="btn btn-danger" <?php echo ($delete == 0) ? : ''; ?>>Confirmer delete ?</button>
+                    <button type="submit" class="btn btn-danger" <?php echo ($delete == 0) ? 'disabled' : ''; ?>>Confirmer delete ?</button>
                 </div>
                 <div class="form-group mt-2">
                     <!-- Message d'avertissement pour prévenir l'utilisateur de la suppression définitive -->
