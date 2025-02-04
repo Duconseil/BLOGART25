@@ -1,75 +1,72 @@
 <?php
+// Inclure le fichier de connexion ou initialisation de la base de données
 include '../../../header.php';
-global $DB;
+
+global $DB; // Assurez-vous que cette variable contient la connexion PDO
+
+// Vérifiez si la connexion à la base de données est déjà initialisée
+if ($DB === null) {
+    // Exemple de connexion à la base de données avec MAMP (remplacez les valeurs par les vôtres si nécessaire)
+    try {
+        // Remplacez 'your_db_name', 'root', 'root' par les informations réelles de votre base de données
+        $DB = new PDO('mysql:host=localhost;dbname=BLOGART25', 'root', 'root');
+        $DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch (PDOException $e) {
+        // Si la connexion échoue, affichez le message d'erreur
+        die("Impossible de se connecter à la base de données: " . $e->getMessage());
+    }
+}
 
 $se_souvenir = isset($_POST["se_souvenir"]);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Vérification des champs requis
-    if (!empty($_POST["pseudonyme"]) && !empty($_POST["mot_de_passe"]) && !empty($_POST['g-recaptcha-response'])) {
-        $pseudo = trim($_POST["pseudonyme"]);
-        $password = sha1(trim($_POST["mot_de_passe"]));
+    // Vérifiez si le pseudoMembnyme et le mot de passe sont renseignés
+    if (!empty($_POST["pseudoMembnyme"]) && !empty($_POST["mot_de_passe"])) {
+        $pseudoMemb = trim($_POST["pseudoMembnyme"]);
+        $passMemb = sha1(trim($_POST["mot_de_passe"])); // Hasher le mot de passe pour la comparaison sécurisée
 
-        // Vérification reCAPTCHA
-        $recaptcha_secret = "6LfpN2QpAAAAAF6lmuCFTukw2i8AiG0Ehb8BbBFq";  // Remplacez par votre clé secrète
-        $recaptcha_response = $_POST['g-recaptcha-response'];
-        $recaptcha_url = "https://www.google.com/recaptcha/api/siteverify";
-        $recaptcha_data = [
-            'secret' => $recaptcha_secret,
-            'response' => $recaptcha_response
-        ];
+        // Requête sécurisée pour vérifier le pseudoMembnyme et le mot de passe
+        try {
+            $sql = "SELECT * FROM membre WHERE passMemb = :mot_de_passe AND pseudoMemb = :pseudoMemb";
+            $stmt = $DB->prepare($sql);
+            $stmt->execute(['pseudoMemb' => $pseudoMemb, 'mot_de_passe' => $passMemb]);
+            $user = $stmt->fetch();
 
-        // Effectuer la requête POST pour vérifier reCAPTCHA
-        $options = [
-            'http' => [
-                'method' => 'POST',
-                'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
-                'content' => http_build_query($recaptcha_data)
-            ]
-        ];
+            // Traitement du résultat de la requête
+            if ($user) {
+                if ($user["code_email"] != null) {
+                    echo "<p style='color:red;'>L'utilisateur n'a pas activé son compte par email.</p>";
+                } else {
+                    // Démarrer la session et enregistrer le pseudoMembnyme
+                    session_start();
+                    $_SESSION["pseudoMembnyme"] = $pseudoMemb;
 
-        $context = stream_context_create($options);
-        $recaptcha_result = json_decode(file_get_contents($recaptcha_url, false, $context));
+                    // Générer un code de cookie unique
+                    $code_cookie = passMemb(uniqid(), PASSWORD_DEFAULT);
+                    if ($se_souvenir) {
+                        // Si "se souvenir de moi" est activé, définir un cookie valide pendant 30 jours
+                        setcookie("code_cookie", $code_cookie, time() + (30 * 24 * 3600), "/", "", false, true);
+                    }
 
-        // Vérification de la réponse reCAPTCHA
-        if (!$recaptcha_result->success || $recaptcha_result->score < 0.5) {
-            echo "<p style='color:red;'>Échec de la vérification reCAPTCHA. Vous semblez être un robot.</p>";
-            exit();
-        }
+                    // Mise à jour du code_cookie dans la base de données
+                    $sql = "UPDATE membre SET code_cookie = :code_cookie WHERE pseudoMemb = :pseudoMemb";
+                    $stmt = $DB->prepare($sql);
+                    $stmt->execute(['pseudoMemb' => $pseudoMemb, 'code_cookie' => $code_cookie]);
 
-        // Requête sécurisée pour vérifier le pseudonyme et le mot de passe
-        $sql = "SELECT * FROM inscription WHERE password = :mot_de_passe AND pseudo = :pseudo";
-        $stmt = $DB->prepare($sql);
-        $stmt->execute(['pseudo' => $pseudo, 'mot_de_passe' => $password]);
-        $user = $stmt->fetch();
-
-        // Traitement du résultat de la requête
-        if ($user) {
-            if ($user["code_email"] != null) {
-                echo "<p style='color:red;'>L'utilisateur n'a pas activé son compte par email.</p>";
-            } else {
-                session_start();
-                $_SESSION["pseudonyme"] = $pseudo;
-
-                $code_cookie = password_hash(uniqid(), PASSWORD_DEFAULT);
-                if ($se_souvenir) {
-                    setcookie("code_cookie", $code_cookie, time() + (30 * 24 * 3600), "/", "", false, true);
+                    // Redirection après la connexion réussie
+                    header("Location: ../../../header.php");
+                    exit();
                 }
-
-                // Mise à jour du code cookie dans la base de données
-                $sql = "UPDATE inscription SET code_cookie = :code_cookie WHERE pseudo = :pseudo";
-                $stmt = $DB->prepare($sql);
-                $stmt->execute(['pseudo' => $pseudo, 'code_cookie' => $code_cookie]);
-
-                // Redirection après connexion réussie
-                header("Location: ../../../header.php");
-                exit();
+            } else {
+                // Si les identifiants sont incorrects
+                echo "<p style='color:red;'>Pseudonyme ou mot de passe incorrect.</p>";
             }
-        } else {
-            echo "<p style='color:red;'>Pseudonyme ou mot de passe incorrect.</p>";
+        } catch (PDOException $e) {
+            echo "<p style='color:red;'>Erreur de requête : " . $e->getMessage() . "</p>";
         }
     } else {
-        echo "<p style='color:red;'>Veuillez entrer un pseudonyme, un mot de passe et compléter la vérification reCAPTCHA.</p>";
+        // Si le pseudoMembnyme ou le mot de passe est manquant
+        echo "<p style='color:red;'>Veuillez entrer un pseudo et un mot de passe.</p>";
     }
 }
 ?>
@@ -79,31 +76,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Inscription</title>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <link rel="stylesheet" href="style.css">
     <script>
         function togglePassword(id) {
-            var passwordField = document.getElementById(id);
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
+            var passMemb = document.getElementById(id);
+            if (passMemb.type === "password") {
+                passMemb.type = "text";
             } else {
-                passwordField.type = "password";
+                passMemb.type = "password";
             }
-        }
-
-        // Fonction appelée après soumission du reCAPTCHA
-        function onSubmit(token) {
-            document.getElementById("form-recaptcha").submit();
         }
     </script>
 </head>
 <body>
     <div class="container">
         <h1>Inscription</h1>
-        <form id="form-recaptcha" action="signup.php" method="post" class="form-container">
+        <form action="signup.php" method="post" class="form-container">
             <div class="form-group">
-                <label for="pseudonyme">Pseudo (non modifiable)</label>
-                <input type="text" name="pseudonyme" placeholder="Pseudonyme" minlength="6" required>
+                <label for="pseudoMembnyme">Pseudo (non modifiable)</label>
+                <input type="text" name="pseudoMembnyme" placeholder="Pseudonyme" minlength="6" required>
                 <p>(non modifiable, au moins 6 caractères)</p>
             </div>
 
@@ -147,13 +138,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="radio" name="accepte_donnees" value="non" required> Non
             </div>
 
-            <!-- reCAPTCHA -->
             <div class="form-group">
-                <button class="g-recaptcha" data-sitekey="6LfpN2QpAAAAAF6lmuCFTukw2i8AiG0Ehb8BbBFq" data-callback="onSubmit" data-action="submit">Soumettre</button>
-            </div>
-
-            <div class="form-group">
-                <button type="submit" class="btn btn-success" style="display: none;">S'inscrire</button>
+                <button type="submit">Soumettre</button>
             </div>
         </form>
     </div>
@@ -186,7 +172,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         text-align: left;
     }
 
-    .form-group input {
+    .form-group input, .form-group button {
         width: 100%;
         padding: 10px;
         margin-top: 5px;
@@ -200,20 +186,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     .form-group button {
-        width: 100%;
-        padding: 10px;
         background-color: #28a745;
         color: white;
-        border: none;
-        border-radius: 5px;
         cursor: pointer;
     }
 
     .form-group button:hover {
         background-color: #218838;
-    }
-
-    .g-recaptcha {
-        margin-top: 20px;
     }
 </style>
