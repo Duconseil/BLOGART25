@@ -6,9 +6,8 @@ global $DB; // Assurez-vous que cette variable contient la connexion PDO
 
 // Vérifiez si la connexion à la base de données est déjà initialisée
 if ($DB === null) {
-    // Exemple de connexion à la base de données avec MAMP (remplacez les valeurs par les vôtres si nécessaire)
     try {
-        // Remplacez 'your_db_name', 'root', 'root' par les informations réelles de votre base de données
+        // Connexion à la base de données
         $DB = new PDO('mysql:host=localhost;dbname=BLOGART25', 'root', 'root');
         $DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     } catch (PDOException $e) {
@@ -17,56 +16,54 @@ if ($DB === null) {
     }
 }
 
-$se_souvenir = isset($_POST["se_souvenir"]);
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Vérifiez si le pseudoMembnyme et le mot de passe sont renseignés
-    if (!empty($_POST["pseudoMembnyme"]) && !empty($_POST["mot_de_passe"])) {
-        $pseudoMemb = trim($_POST["pseudoMembnyme"]);
-        $passMemb = sha1(trim($_POST["mot_de_passe"])); // Hasher le mot de passe pour la comparaison sécurisée
+    // Vérifiez si le pseudo, le mot de passe et le mot de passe de confirmation sont renseignés
+    if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"]) && !empty($_POST["mot_de_passe_confirm"]) && !empty($_POST["prenom"]) && !empty($_POST["nom"]) && !empty($_POST["eMailMemb"])) {
+        $pseudoMemb = trim($_POST["pseudoMemb"]);
+        $passMemb = trim($_POST["mot_de_passe"]);
+        $passMembConfirm = trim($_POST["mot_de_passe_confirm"]);
+        $prenomMemb = trim($_POST["prenom"]);
+        $nomMemb = trim($_POST["nom"]);
+        $eMailMemb = trim($_POST["eMailMemb"]);
 
-        // Requête sécurisée pour vérifier le pseudoMembnyme et le mot de passe
-        try {
-            $sql = "SELECT * FROM membre WHERE passMemb = :mot_de_passe AND pseudoMemb = :pseudoMemb";
-            $stmt = $DB->prepare($sql);
-            $stmt->execute(['pseudoMemb' => $pseudoMemb, 'mot_de_passe' => $passMemb]);
-            $user = $stmt->fetch();
+        // Vérifier que les mots de passe sont identiques
+        if ($passMemb !== $passMembConfirm) {
+            echo "<p style='color:red;'>Les mots de passe ne correspondent pas.</p>";
+        } else {
+            // Hacher le mot de passe pour le stockage sécurisé
+            $passMembHashed = sha1($passMemb);
 
-            // Traitement du résultat de la requête
-            if ($user) {
-                if ($user["code_email"] != null) {
-                    echo "<p style='color:red;'>L'utilisateur n'a pas activé son compte par email.</p>";
+            try {
+                // Vérifier si le pseudo est déjà pris
+                $sql = "SELECT * FROM membre WHERE pseudoMemb = :pseudoMemb";
+                $stmt = $DB->prepare($sql);
+                $stmt->execute(['pseudoMemb' => $pseudoMemb]);
+                $existingUser = $stmt->fetch();
+
+                if ($existingUser) {
+                    echo "<p style='color:red;'>Ce pseudonyme est déjà pris. Veuillez en choisir un autre.</p>";
                 } else {
-                    // Démarrer la session et enregistrer le pseudoMembnyme
-                    session_start();
-                    $_SESSION["pseudoMembnyme"] = $pseudoMemb;
-
-                    // Générer un code de cookie unique
-                    $code_cookie = passMemb(uniqid(), PASSWORD_DEFAULT);
-                    if ($se_souvenir) {
-                        // Si "se souvenir de moi" est activé, définir un cookie valide pendant 30 jours
-                        setcookie("code_cookie", $code_cookie, time() + (30 * 24 * 3600), "/", "", false, true);
-                    }
-
-                    // Mise à jour du code_cookie dans la base de données
-                    $sql = "UPDATE membre SET code_cookie = :code_cookie WHERE pseudoMemb = :pseudoMemb";
+                    // Insérer un nouvel utilisateur dans la base de données
+                    $sql = "INSERT INTO membre (pseudoMemb, passMemb, prenomMemb, nomMemb, eMailMemb, numStat) VALUES (:pseudoMemb, :passMemb, :prenomMemb, :nomMemb, :eMailMemb, :numStat)";
                     $stmt = $DB->prepare($sql);
-                    $stmt->execute(['pseudoMemb' => $pseudoMemb, 'code_cookie' => $code_cookie]);
+                    $stmt->execute([
+                        'pseudoMemb' => $pseudoMemb,
+                        'passMemb' => $passMembHashed,
+                        'prenomMemb' => $prenomMemb,
+                        'nomMemb' => $nomMemb,
+                        'eMailMemb' => $eMailMemb,
+                        'numStat' => 1 // Valeur par défaut pour numStat, à adapter selon votre besoin
+                    ]);
 
-                    // Redirection après la connexion réussie
-                    header("Location: ../../../header.php");
-                    exit();
+                    echo "<p style='color:green;'>Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.</p>";
                 }
-            } else {
-                // Si les identifiants sont incorrects
-                echo "<p style='color:red;'>Pseudonyme ou mot de passe incorrect.</p>";
+            } catch (PDOException $e) {
+                echo "<p style='color:red;'>Erreur de requête : " . $e->getMessage() . "</p>";
             }
-        } catch (PDOException $e) {
-            echo "<p style='color:red;'>Erreur de requête : " . $e->getMessage() . "</p>";
         }
     } else {
-        // Si le pseudoMembnyme ou le mot de passe est manquant
-        echo "<p style='color:red;'>Veuillez entrer un pseudo et un mot de passe.</p>";
+        // Si l'un des champs est vide
+        echo "<p style='color:red;'>Veuillez remplir tous les champs.</p>";
     }
 }
 ?>
@@ -93,9 +90,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h1>Inscription</h1>
         <form action="signup.php" method="post" class="form-container">
             <div class="form-group">
-                <label for="pseudoMembnyme">Pseudo (non modifiable)</label>
-                <input type="text" name="pseudoMembnyme" placeholder="Pseudonyme" minlength="6" required>
-                <p>(non modifiable, au moins 6 caractères)</p>
+                <label for="pseudoMemb">Pseudo</label>
+                <input type="text" name="pseudoMemb" placeholder="Pseudonyme" minlength="6" required>
+                <p>(au moins 6 caractères)</p>
             </div>
 
             <div class="form-group">
@@ -109,14 +106,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" name="email" placeholder="Email" minlength="6" required>
+                <label for="eMailMemb">Email</label>
+                <input type="email" name="eMailMemb" placeholder="Email" minlength="6" required>
                 <p>(au moins 6 caractères)</p>
             </div>
 
             <div class="form-group">
-                <label for="email_confirm">Confirmez Email</label>
-                <input type="email" name="email_confirm" placeholder="Confirmez Email" minlength="6" required>
+                <label for="eMailMemb_confirm">Confirmez Email</label>
+                <input type="email" name="eMailMemb_confirm" placeholder="Confirmez Email" minlength="6" required>
             </div>
 
             <div class="form-group">
@@ -139,7 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <div class="form-group">
-                <button type="submit">Soumettre</button>
+                <button type="submit">S'inscrire</button>
             </div>
         </form>
     </div>
