@@ -17,54 +17,81 @@ if ($DB === null) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Vérifiez si les champs nécessaires sont renseignés
-    if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"]) && !empty($_POST["mot_de_passe_confirm"]) && !empty($_POST["prenom"]) && !empty($_POST["nom"]) && !empty($_POST["eMailMemb"]) && isset($_POST["statut"])) {
-        $pseudoMemb = trim($_POST["pseudoMemb"]);
-        $passMemb = trim($_POST["mot_de_passe"]);
-        $passMembConfirm = trim($_POST["mot_de_passe_confirm"]);
-        $prenomMemb = trim($_POST["prenom"]);
-        $nomMemb = trim($_POST["nom"]);
-        $eMailMemb = trim($_POST["eMailMemb"]);
-        $statut = (int)$_POST["statut"]; // Assurez-vous que le statut est un entier valide
+    // Vérification du reCAPTCHA
+    if (isset($_POST['g-recaptcha-response'])) {
+        $token = $_POST['g-recaptcha-response'];
+        $secretKey = '[VOTRE_CLE_SECRETE]'; // Remplacez par votre clé secrète reCAPTCHA
+        $url = 'https://www.google.com/recaptcha/api/siteverify';
+        $data = array(
+            'secret' => $secretKey,
+            'response' => $token
+        );
+        $options = array(
+            'http' => array(
+                'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+                'method' => 'POST',
+                'content' => http_build_query($data)
+            )
+        );
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        $response = json_decode($result);
 
-        // Vérifier que les mots de passe sont identiques
-        if ($passMemb !== $passMembConfirm) {
-            echo "<p style='color:red;'>Les mots de passe ne correspondent pas.</p>";
-        } else {
-            // Hacher le mot de passe pour le stockage sécurisé
-            $passMembHashed = sha1($passMemb);
+        if ($response->success && $response->score >= 0.5) {
+            // Le reCAPTCHA est validé, on vérifie les informations
+            if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"]) && !empty($_POST["mot_de_passe_confirm"]) && !empty($_POST["prenom"]) && !empty($_POST["nom"]) && !empty($_POST["eMailMemb"]) && isset($_POST["statut"])) {
+                $pseudoMemb = trim($_POST["pseudoMemb"]);
+                $passMemb = trim($_POST["mot_de_passe"]);
+                $passMembConfirm = trim($_POST["mot_de_passe_confirm"]);
+                $prenomMemb = trim($_POST["prenom"]);
+                $nomMemb = trim($_POST["nom"]);
+                $eMailMemb = trim($_POST["eMailMemb"]);
+                $statut = (int)$_POST["statut"]; // Assurez-vous que le statut est un entier valide
 
-            try {
-                // Vérifier si le pseudo est déjà pris
-                $sql = "SELECT * FROM membre WHERE pseudoMemb = :pseudoMemb";
-                $stmt = $DB->prepare($sql);
-                $stmt->execute(['pseudoMemb' => $pseudoMemb]);
-                $existingUser = $stmt->fetch();
-
-                if ($existingUser) {
-                    echo "<p style='color:red;'>Ce pseudonyme est déjà pris. Veuillez en choisir un autre.</p>";
+                // Vérifier que les mots de passe sont identiques
+                if ($passMemb !== $passMembConfirm) {
+                    echo "<p style='color:red;'>Les mots de passe ne correspondent pas.</p>";
                 } else {
-                    // Insérer un nouvel utilisateur dans la base de données
-                    $sql = "INSERT INTO membre (pseudoMemb, passMemb, prenomMemb, nomMemb, eMailMemb, numStat) VALUES (:pseudoMemb, :passMemb, :prenomMemb, :nomMemb, :eMailMemb, :numStat)";
-                    $stmt = $DB->prepare($sql);
-                    $stmt->execute([
-                        'pseudoMemb' => $pseudoMemb,
-                        'passMemb' => $passMembHashed,
-                        'prenomMemb' => $prenomMemb,
-                        'nomMemb' => $nomMemb,
-                        'eMailMemb' => $eMailMemb,
-                        'numStat' => $statut // Valeur dynamique en fonction du statut sélectionné
-                    ]);
+                    // Hacher le mot de passe pour le stockage sécurisé
+                    $passMembHashed = sha1($passMemb);
 
-                    echo "<p style='color:green;'>Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.</p>";
+                    try {
+                        // Vérifier si le pseudo est déjà pris
+                        $sql = "SELECT * FROM membre WHERE pseudoMemb = :pseudoMemb";
+                        $stmt = $DB->prepare($sql);
+                        $stmt->execute(['pseudoMemb' => $pseudoMemb]);
+                        $existingUser = $stmt->fetch();
+
+                        if ($existingUser) {
+                            echo "<p style='color:red;'>Ce pseudonyme est déjà pris. Veuillez en choisir un autre.</p>";
+                        } else {
+                            // Insérer un nouvel utilisateur dans la base de données
+                            $sql = "INSERT INTO membre (pseudoMemb, passMemb, prenomMemb, nomMemb, eMailMemb, numStat) VALUES (:pseudoMemb, :passMemb, :prenomMemb, :nomMemb, :eMailMemb, :numStat)";
+                            $stmt = $DB->prepare($sql);
+                            $stmt->execute([
+                                'pseudoMemb' => $pseudoMemb,
+                                'passMemb' => $passMembHashed,
+                                'prenomMemb' => $prenomMemb,
+                                'nomMemb' => $nomMemb,
+                                'eMailMemb' => $eMailMemb,
+                                'numStat' => $statut // Valeur dynamique en fonction du statut sélectionné
+                            ]);
+
+                            echo "<p style='color:green;'>Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.</p>";
+                        }
+                    } catch (PDOException $e) {
+                        echo "<p style='color:red;'>Erreur de requête : " . $e->getMessage() . "</p>";
+                    }
                 }
-            } catch (PDOException $e) {
-                echo "<p style='color:red;'>Erreur de requête : " . $e->getMessage() . "</p>";
+            } else {
+                echo "<p style='color:red;'>Veuillez remplir tous les champs et choisir un statut.</p>";
             }
+        } else {
+            // Le CAPTCHA a échoué, message d'erreur
+            echo "<p style='color:red;'>Veuillez confirmer que vous n'êtes pas un robot.</p>";
         }
     } else {
-        // Si l'un des champs est vide ou si le statut n'est pas sélectionné
-        echo "<p style='color:red;'>Veuillez remplir tous les champs et choisir un statut.</p>";
+        echo "<p style='color:red;'>Veuillez valider le CAPTCHA.</p>";
     }
 }
 ?>
@@ -75,6 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <title>Inscription</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
         function togglePassword(id) {
             var passMemb = document.getElementById(id);
@@ -143,6 +171,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="radio" name="accepte_donnees" value="oui" required> Oui
                 <input type="radio" name="accepte_donnees" value="non" required> Non
             </div>
+
+            <!-- Ajout du bouton reCaptcha -->
+            <div class="g-recaptcha" data-sitekey="[VOTRE_CLE_SITE]" data-callback="onSubmit" data-action="submit"></div>
+            <br>
 
             <div class="form-group">
                 <button type="submit">S'inscrire</button>
