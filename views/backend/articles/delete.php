@@ -15,17 +15,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['numArt'])) {
         // Récupère l'ID de l'article depuis le formulaire
         $numArtToDelete = intval($_POST['numArt']);
-        
-        // Effectuer la suppression de l'article dans la base de données
-        $deleteSuccess = sql_delete("ARTICLE", "numArt = $numArtToDelete");
 
-        if ($deleteSuccess) {
-            // Si la suppression est réussie, redirige vers la liste des articles
-            header("Location: list.php?message=Article supprimé avec succès");
-            exit;
+        // Vérifier s'il y a des entrées dépendantes dans la table 'motclearticle'
+        $relatedRows = sql_select('motclearticle', 'COUNT(*) as count', "numArt = $numArtToDelete");
+
+        if ($relatedRows[0]['count'] > 0) {
+            // Si des lignes dépendantes existent, afficher un message d'erreur
+            $errorMessage = "Impossible de supprimer l'article car il est référencé dans le tableau 'motclearticle'.";
         } else {
-            // Si la suppression échoue, affiche un message d'erreur
-            $errorMessage = "Erreur lors de la suppression de l'article.";
+            // Effectuer la suppression de l'article et des lignes dépendantes dans la table 'motclearticle'
+            $deleteSuccessMotCle = sql_delete('motclearticle', "numArt = $numArtToDelete");
+
+            if ($deleteSuccessMotCle) {
+                // Effectuer la suppression de l'article dans la base de données
+                $deleteSuccessArticle = sql_delete("ARTICLE", "numArt = $numArtToDelete");
+
+                if ($deleteSuccessArticle) {
+                    // Si la suppression est réussie, redirige vers la liste des articles
+                    header("Location: list.php?message=Article supprimé avec succès");
+                    exit;
+                } else {
+                    // Si la suppression échoue, affiche un message d'erreur
+                    $errorMessage = "Erreur lors de la suppression de l'article.";
+                }
+            } else {
+                // Si la suppression des lignes dépendantes échoue
+                $errorMessage = "Erreur lors de la suppression des dépendances de l'article.";
+            }
         }
     }
 }
