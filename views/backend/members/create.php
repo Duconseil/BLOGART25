@@ -1,156 +1,107 @@
 <?php
 include '../../../header.php';
 
-// Fonction pour valider l'email
-function validateEmail($email) {
-    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
-}
 
-// Fonction pour valider le mot de passe
-function validatePassword($password) {
-    return preg_match('/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/', $password);
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Récupérer les données du formulaire
-    $pseudo = $_POST['pseudo'];
-    $prenom = $_POST['prenom'];
-    $nom = $_POST['nom'];
-    $password = $_POST['password'];
-    $confirmPassword = $_POST['confirmPassword'];
-    $email = $_POST['email'];
-    $confirmEmail = $_POST['confirmEmail'];
-    $statut = $_POST['statut'];
-
-    // Validation des données
-    if (!validateEmail($email)) {
-        die("L'email n'est pas valide.");
-    }
-    if (!validatePassword($password)) {
-        die("Le mot de passe doit contenir une majuscule, une minuscule, un chiffre et un caractère spécial.");
-    }
-    if ($password !== $confirmPassword) {
-        die("Les mots de passe ne correspondent pas.");
-    }
-    if ($email !== $confirmEmail) {
-        die("Les emails ne correspondent pas.");
-    }
-
-    // Hacher le mot de passe
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-    // Connexion à la base de données
-    $servername = "localhost";
-    $username = "root";
-    $password_db = "root";
-    $dbname = "BLOGART25"; // Assurez-vous que la base de données existe
-
-    $conn = new mysqli($servername, $username, $password_db, $dbname);
-
-    if ($conn->connect_error) {
-        die("Échec de la connexion : " . $conn->connect_error);
-    }
-
-    // Requête préparée pour insérer le membre dans la base de données
-    $stmt = $conn->prepare("INSERT INTO membre (pseudoMemb, prenomMemb, nomMemb, passMemb, eMailMemb, numStat) VALUES (?, ?, ?, ?, ?, ?)");
-    if ($stmt === false) {
-        die("Erreur lors de la préparation de la requête : " . $conn->error);
-    }
-
-    $stmt->bind_param("sssssi", $pseudo, $prenom, $nom, $hashedPassword, $email, $statut);
-    
-    if ($stmt->execute()) {
-        header('Location: /views/backend/members/list.php');
-        exit;
+if (isset($_GET['numCom'])){
+    $numCom = $_GET['numCom'];
+    $comment = sql_select('comment', '*', "numCom ='$numCom'")[0];
+    $pseudoMemb = $comment['pseudoMemb'];
+    $numArt = $comment['numArt'];
+    $libCom = $comment['libCom'];
     } else {
-        die("Erreur lors de la création du membre : " . $stmt->error);
+    header('/index.php');
     }
 
-    $stmt->close();
-    $conn->close();
-}
 ?>
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <link rel="stylesheet" href="style.css">
-    <script>
-        function togglePasswordVisibility() {
-            var passwordField = document.getElementById("password");
-            var confirmPasswordField = document.getElementById("confirmPassword");
-            var checkbox = document.getElementById("showPassword");
-            if (checkbox.checked) {
-                passwordField.type = "text";
-                confirmPasswordField.type = "text";
-            } else {
-                passwordField.type = "password";
-                confirmPasswordField.type = "password";
-            }
-        }
-    </script>
-</head>
-<body>
-    <div class="container">
-        <h1>Création nouveau Membre</h1>
-        <form action="" method="post" style="padding: 2vw;">
-            <div class="form-group">
-                <label for="pseudo">Pseudo (non modifiable)</label>
-                <input type="text" class="form-control" name="pseudo" id="pseudo" required>
-                <p>(Entre 6 et 70 car.)</p>
-            </div>
-            <div class="form-group">
-                <label for="prenom">Prénom</label>
-                <input type="text" class="form-control" name="prenom" id="prenom" required>
-            </div>
-            <div class="form-group">
-                <label for="nom">Nom</label>
-                <input type="text" class="form-control" name="nom" id="nom" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Mot de passe</label>
-                <input type="password" class="form-control" name="password" id="password" required>
-                <p>Le mot de passe doit contenir une majuscule, une minuscule, un chiffre et un caractère spécial.</p>
-            </div>
-            <div class="form-group">
-                <label for="confirmPassword">Confirmer le mot de passe</label>
-                <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" required>
-            </div>
-            <div class="form-group">
-                <input type="checkbox" id="showPassword" onclick="togglePasswordVisibility()"> <label for="showPassword">Afficher les mots de passe</label>
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" name="email" id="email" required>
-            </div>
-            <div class="form-group">
-                <label for="confirmEmail">Confirmer l'email</label>
-                <input type="email" class="form-control" name="confirmEmail" id="confirmEmail" required>
-            </div>
-            <div class="form-group">
-                <label for="statut">Statut</label>
-                <select class="form-control" name="statut" id="statut" required>
-                    <option value="1">Utilisateur</option>
-                    <option value="2">Administrateur</option>
-                    <option value="3">Modérateur</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="recaptcha">reCAPTCHA</label>
-                <div class="g-recaptcha" data-sitekey="6LfpN2QpAAAAAF6lmuCFTukw2i8AiG0Ehb8BbBFq" data-callback="enableSubmitButton"></div>
-            </div>
-
-            <div class="form-group mt-2">
-                    <a href="list.php" class="btn btn-primary">Liste</a>
-                    <button type="submit" class="btn btn-success">Confirmer la création ?</button>
+<!-- Bootstrap form to create a new member -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Création nouveau Membre</h1>
+        </div>
+        <div class="col-md-12">
+            <!-- Form to create a new member -->
+            <form action="<?php echo ROOT_URL . '/api/members/create.php' ?>" method="post" id="formCreate">
+                <div class="form-group">
+                    <!-- PSEUDO -->
+                    <label for="pseudoMemb">Pseudo du membre (non modifiable)</label>
+                    <input id="pseudoMemb" name="pseudoMemb" class="form-control" type="text" autofocus="autofocus" />
+                    <p>(entre 6 et 70 caractères)</p>
+                    <!-- PRENOM -->
+                    <label for="prenomMemb">Prénom du membre</label>
+                    <input id="prenomMemb" name="prenomMemb" class="form-control" type="text" autofocus="autofocus" />
+                    <!-- NOM -->
+                    <label for="nomMemb">Nom du membre</label>
+                    <input id="nomMemb" name="nomMemb" class="form-control" type="text" autofocus="autofocus" />
+                    <!-- MDP -->
+                    <label for="passMemb">Mot de passe du membre</label>
+                    <input id="passMemb" name="passMemb" class="form-control" type="password" autofocus="autofocus" />
+                    <p>(Entre 8 et 15 car., au - une majuscule, une minuscule, un chiffre, car. spéciaux acceptés)</p>
+                    <button type="button" id="afficher"  class="btn btn-secondary">Afficher le mot de passe</button><br><br>
+                    <!-- MDP VERIFICATION -->
+                    <label for="passMemb2">Confirmez mot de passe du membre</label>
+                    <input id="passMemb2" name="passMemb2" class="form-control" type="password" autofocus="autofocus" />
+                    <p>(Entre 8 et 15 car., au - une majuscule, une minuscule, un chiffre, car. spéciaux acceptés)</p>
+                    <button type="button" id="afficher2" class="btn btn-secondary">Afficher le mot de passe</button><br><br>
+                    <!-- EMAIL -->
+                    <label for="eMailMemb">Email du membre</label>
+                    <input id="eMailMemb" name="eMailMemb" class="form-control" type="text" autofocus="autofocus" />
+                    <!-- EMAIL VERIFICATION -->
+                    <label for="eMailMemb2">Confirmez email du membre</label>
+                    <input id="eMailMemb2" name="eMailMemb2" class="form-control" type="text" autofocus="autofocus" />
+                    <!-- PARTAGE DES DONNEES -->
+                    <label for="accordMemb">J'accepte que mes données soient conservées :</label>
+                    <input type="radio" id="accordMemb" name="accordMemb" value="OUI" />
+                    <label for="accordMemb">Oui</label>
+                    <input type="radio" id="accordMemb" name="accordMemb" value="NON" checked />
+                    <label for="accordMemb">Non</label>
+                    <br><br>
+                    <!-- STATUT -->
+                    <label for="numStat">Statut :</label>
+                    <select name="numStat" id="numStat">
+                        <option value="1" <?= ($numStat == 1) ? 'selected' : '' ?>>Administrateur</option>
+                        <option value="2" <?= ($numStat == 2) ? 'selected' : '' ?>>Modérateur</option>
+                        <option value="3" <?= ($numStat == 3) ? 'selected' : '' ?>>Membre</option>
+                    </select>
                 </div>
-        </form>
+                <br />
+                <div class="form-group mt-2">
+                    <button type="submit" class="btn btn-primary">Confirmer create ?</button>
+                </div>
+            </form>
+        </div>
     </div>
-</body>
-</html>
+</div>
 
-<?php
-include '../../../footer.php';
-?>
+<!-- JS POUR CACHER/AFFICHER MDP-->
+<script>
+document.getElementById( 'afficher' ).addEventListener( "click", function() {
+
+    attribut = document.getElementById( 'passMemb' ).getAttribute( 'type');
+    if(attribut == 'password'){
+        document.getElementById( 'passMemb' ).setAttribute( 'type', 'text');
+    } else {
+        document.getElementById( 'passMemb' ).setAttribute( 'type', 'password');
+    }
+    
+});
+
+document.getElementById( 'afficher2' ).addEventListener( "click", function() {
+
+    attribut = document.getElementById( 'passMemb2' ).getAttribute( 'type');
+    if(attribut == 'password'){
+        document.getElementById( 'passMemb2' ).setAttribute( 'type', 'text');
+    } else {
+        document.getElementById( 'passMemb2' ).setAttribute( 'type', 'password');
+    }
+
+});
+
+// CAPTCHA 
+/*function onSubmit(token) {
+document.getElementById("recaptcha").submit();
+console.log(document.getElementById("recaptcha"));
+}*/
+
+</script>
