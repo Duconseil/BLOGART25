@@ -10,6 +10,7 @@ include '../../../header.php';
 if(isset($_GET['numMemb'])){
     $numMemb = $_GET['numMemb'];
     $membre = sql_select("MEMBRE", "*", "numMemb = $numMemb")[0];
+    $numStat = $membre ['numStat'];
     $pseudoMemb = $membre['pseudoMemb'];
     $prenomMemb = $membre['prenomMemb'];
     $nomMemb = $membre['nomMemb'];

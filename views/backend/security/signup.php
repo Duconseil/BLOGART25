@@ -133,9 +133,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="form-group">
                 <label for="statut">Statut</label>
                 <select class="form-control" name="statut" id="statut" required>
-                    <option value="1">Utilisateur</option>
-                    <option value="2">Administrateur</option>
-                    <option value="3">Modérateur</option>
+                    <option value="3">Membre</option>
+                    <option value="2">Modérateur</option>
                 </select>
             </div>
 
