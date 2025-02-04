@@ -1,16 +1,22 @@
 <?php
+
 include '../../../header.php';
+
+$canDelete = true;
+$message = "";
 
 if (isset($_GET['numArt'])) {
     $numArt = intval($_GET['numArt']);
     $articles = sql_select("ARTICLE A LEFT JOIN THEMATIQUE T ON A.numThem = T.numThem", "A.*, T.libThem", "A.numArt = $numArt");
     $article = $articles[0] ?? null;
-}
 
-$canDelete = true;
-$relatedRows = sql_select('motclearticle', 'COUNT(*) as count', "numArt = $numArt");
-if ($relatedRows[0]['count'] > 0) {
-    $canDelete = false;
+    $relatedRows = sql_select('motclearticle', 'COUNT(*) as count', "numArt = $numArt");
+    if ($relatedRows[0]['count'] > 0) {
+        $canDelete = false;
+        $message = "Impossible de supprimer l'article : il est lié à des mots-clés. Veuillez supprimer ces associations avant de continuer.";
+    }
+} else {
+    $article = null;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canDelete) {
@@ -38,6 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canDelete) {
         <div class="col-md-12">
             <h1>Suppression de l'article</h1>
         </div>
+        <?php if (!empty($message)) : ?>
+            <div class="col-md-12">
+                <div class="alert alert-danger" role="alert"> <?php echo $message; ?> </div>
+            </div>
+        <?php endif; ?>
         <div class="col-md-12">
             <?php if ($article): ?>
             <form action="" method="post">
@@ -75,12 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canDelete) {
             <?php else: ?>
                 <p style="color:red">Article introuvable.</p>
             <?php endif; ?>
-            <?php if (!$canDelete): ?>
-                <p style="color:red">Impossible de supprimer l'article car il est référencé dans 'motclearticle'. Supprimez cette contrainte d'abord.</p>
-            <?php endif; ?>
             <?php if (isset($errorMessage)): ?>
-                <p style="color:red"><?php echo htmlspecialchars($errorMessage); ?></p>
+                <p style="color:red"> <?php echo htmlspecialchars($errorMessage); ?> </p>
             <?php endif; ?>
         </div>
     </div>
 </div>
+
+<?php
+include '../../../footer.php';
+?>
