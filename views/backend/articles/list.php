@@ -3,9 +3,8 @@ include '../../../header.php'; // contains the header and call to config.php
 
 // Load all articles with the related thematique
 $articles = sql_select('ARTICLE INNER JOIN THEMATIQUE ON article.numThem = thematique.numThem', '*');
-
 ?>
-<!-- Bootstrap default layout to display all articles in foreach -->
+
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -18,15 +17,15 @@ $articles = sql_select('ARTICLE INNER JOIN THEMATIQUE ON article.numThem = thema
                         <th>Titre</th>
                         <th>Chapeau</th>
                         <th>Accroche</th>
-                        <th>Mot Cle</th> 
-                        <th>Thématique</th> 
-                        <th>Photo</th>  <!-- New column for photo -->
-                        <th>Action</th> 
+                        <th>Mot Cle</th>
+                        <th>Thématique</th>
+                        <th>Photo</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach($articles as $article){ 
-                        $numArt = $article['numArt']; // Get the article number
+                        $numArt = $article['numArt'];
                         $listMot = sql_select('ARTICLE
                         INNER JOIN MOTCLEARTICLE ON article.numArt = motclearticle.numArt
                         INNER JOIN motcle ON motclearticle.numMotCle = motcle.numMotCle', 'article.numArt, libMotCle', "article.numArt = '$numArt'");
@@ -37,15 +36,14 @@ $articles = sql_select('ARTICLE INNER JOIN THEMATIQUE ON article.numThem = thema
                             <td><?php echo($article['libTitrArt']); ?></td>
                             <td><?php echo($article['libChapoArt']); ?></td>
                             <td><?php echo($article['libAccrochArt']); ?></td>
-                            <td><?php 
-                                foreach ($listMot as $mot){
-                                    echo($mot['libMotCle'] . ', ');
-                                }
-                            ?></td> 
+                            <td><?php foreach ($listMot as $mot){ echo($mot['libMotCle'] . ', '); } ?></td>
                             <td><?php echo($article['libThem']); ?></td>
                             <td>
-                                <!-- Display image for the article -->
-                                <img src="<?php echo ROOT_URL . '/src/uploads/' . str_replace('.jpg', '.png', $article['urlPhotArt']); ?>" alt="Article Image" style="max-width: 200px; height: auto;">
+                                <?php if (!empty($article['urlPhotArt'])): ?>
+                                    <img src="<?php echo ROOT_URL . '/src/uploads/' . $article['urlPhotArt']; ?>" alt="Article Image" style="max-width: 200px; height: auto;">
+                                <?php else: ?>
+                                    <p>Aucune image</p>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <a href="edit.php?numArt=<?php echo($article['numArt']); ?>" class="btn btn-primary">Edit</a>
@@ -60,6 +58,4 @@ $articles = sql_select('ARTICLE INNER JOIN THEMATIQUE ON article.numThem = thema
     </div>
 </div>
 
-<?php
-include '../../../footer.php'; // contains the footer
-?>
+<?php include '../../../footer.php'; ?>
