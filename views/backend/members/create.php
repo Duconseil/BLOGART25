@@ -143,9 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="form-group mt-2">
-                <a href="list.php" class="btn btn-primary">Liste</a>
-                <button type="submit" class="btn btn-success">Confirmer</button>
-            </div>
+                    <a href="list.php" class="btn btn-primary">Liste</a>
+                    <button type="submit" class="btn btn-success">Confirmer la création ?</button>
+                </div>
         </form>
     </div>
 </body>
