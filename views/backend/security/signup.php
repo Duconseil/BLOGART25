@@ -17,14 +17,15 @@ if ($DB === null) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Vérifiez si le pseudo, le mot de passe et le mot de passe de confirmation sont renseignés
-    if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"]) && !empty($_POST["mot_de_passe_confirm"]) && !empty($_POST["prenom"]) && !empty($_POST["nom"]) && !empty($_POST["eMailMemb"])) {
+    // Vérifiez si les champs nécessaires sont renseignés
+    if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"]) && !empty($_POST["mot_de_passe_confirm"]) && !empty($_POST["prenom"]) && !empty($_POST["nom"]) && !empty($_POST["eMailMemb"]) && isset($_POST["statut"])) {
         $pseudoMemb = trim($_POST["pseudoMemb"]);
         $passMemb = trim($_POST["mot_de_passe"]);
         $passMembConfirm = trim($_POST["mot_de_passe_confirm"]);
         $prenomMemb = trim($_POST["prenom"]);
         $nomMemb = trim($_POST["nom"]);
         $eMailMemb = trim($_POST["eMailMemb"]);
+        $statut = (int)$_POST["statut"]; // Assurez-vous que le statut est un entier valide
 
         // Vérifier que les mots de passe sont identiques
         if ($passMemb !== $passMembConfirm) {
@@ -52,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         'prenomMemb' => $prenomMemb,
                         'nomMemb' => $nomMemb,
                         'eMailMemb' => $eMailMemb,
-                        'numStat' => 1 // Valeur par défaut pour numStat, à adapter selon votre besoin
+                        'numStat' => $statut // Valeur dynamique en fonction du statut sélectionné
                     ]);
 
                     echo "<p style='color:green;'>Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.</p>";
@@ -62,8 +63,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
     } else {
-        // Si l'un des champs est vide
-        echo "<p style='color:red;'>Veuillez remplir tous les champs.</p>";
+        // Si l'un des champs est vide ou si le statut n'est pas sélectionné
+        echo "<p style='color:red;'>Veuillez remplir tous les champs et choisir un statut.</p>";
     }
 }
 ?>
@@ -127,6 +128,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="mot_de_passe_confirm">Confirmez Mot de passe</label>
                 <input type="password" id="mot_de_passe_confirm" name="mot_de_passe_confirm" placeholder="Confirmez Mot de passe" minlength="8" maxlength="15" required>
                 <input type="checkbox" onclick="togglePassword('mot_de_passe_confirm')"> Afficher Mot de passe
+            </div>
+
+            <div class="form-group">
+                <label for="statut">Statut</label>
+                <select class="form-control" name="statut" id="statut" required>
+                    <option value="1">Utilisateur</option>
+                    <option value="2">Administrateur</option>
+                    <option value="3">Modérateur</option>
+                </select>
             </div>
 
             <div class="form-group">
