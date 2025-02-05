@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Vérification du reCAPTCHA
     if (isset($_POST['g-recaptcha-response'])) {
         $token = $_POST['g-recaptcha-response'];
-        $secretKey = '[VOTRE_CLE_SECRETE]'; // Remplacez par votre clé secrète reCAPTCHA
+        $secretKey = '6LfpN2QpAAAAAF6lmuCFTukw2i8AiG0Ehb8BbBFq'; // Remplacez par votre clé secrète reCAPTCHA v2
         $url = 'https://www.google.com/recaptcha/api/siteverify';
         $data = array(
             'secret' => $secretKey,
@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($response->success && $response->score >= 0.5) {
             // Le reCAPTCHA est validé, on vérifie les informations
-            if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"]) && !empty($_POST["mot_de_passe_confirm"]) && !empty($_POST["prenom"]) && !empty($_POST["nom"]) && !empty($_POST["eMailMemb"]) && isset($_POST["statut"])) {
+            if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"]) && !empty($_POST["mot_de_passe_confirm"]) && !empty($_POST["prenom"]) && !empty($_POST["nom"]) && !empty($_POST["eMailMemb"])) {
                 $pseudoMemb = trim($_POST["pseudoMemb"]);
                 $passMemb = trim($_POST["mot_de_passe"]);
                 $passMembConfirm = trim($_POST["mot_de_passe_confirm"]);
@@ -64,16 +64,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if ($existingUser) {
                             echo "<p style='color:red;'>Ce pseudonyme est déjà pris. Veuillez en choisir un autre.</p>";
                         } else {
-                            // Insérer un nouvel utilisateur dans la base de données
-                            $sql = "INSERT INTO membre (pseudoMemb, passMemb, prenomMemb, nomMemb, eMailMemb, numStat) VALUES (:pseudoMemb, :passMemb, :prenomMemb, :nomMemb, :eMailMemb, :numStat)";
+                            // Insérer un nouvel utilisateur avec le statut par défaut (membre)
+                            $sql = "INSERT INTO membre (pseudoMemb, passMemb, prenomMemb, nomMemb, eMailMemb) VALUES (:pseudoMemb, :passMemb, :prenomMemb, :nomMemb, :eMailMemb)";
                             $stmt = $DB->prepare($sql);
                             $stmt->execute([
                                 'pseudoMemb' => $pseudoMemb,
                                 'passMemb' => $passMembHashed,
                                 'prenomMemb' => $prenomMemb,
                                 'nomMemb' => $nomMemb,
-                                'eMailMemb' => $eMailMemb,
-                                'numStat' => $statut // Valeur dynamique en fonction du statut sélectionné
+                                'eMailMemb' => $eMailMemb
                             ]);
 
                             echo "<p style='color:green;'>Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.</p>";
@@ -83,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
                 }
             } else {
-                echo "<p style='color:red;'>Veuillez remplir tous les champs et choisir un statut.</p>";
+                echo "<p style='color:red;'>Veuillez remplir tous les champs.</p>";
             }
         } else {
             // Le CAPTCHA a échoué, message d'erreur
@@ -94,6 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -164,7 +164,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <!-- Ajout du bouton reCaptcha -->
-            <div class="g-recaptcha" data-sitekey="[VOTRE_CLE_SITE]" data-callback="onSubmit" data-action="submit"></div>
+            <div class="g-recaptcha" data-sitekey="6LfpN2QpAAAAAF6lmuCFTukw2i8AiG0Ehb8BbBFq"></div>
             <br>
 
             <div class="form-group">
@@ -174,6 +174,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </body>
 </html>
+
 
 <style>
     body {

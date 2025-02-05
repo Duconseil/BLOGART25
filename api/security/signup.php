@@ -2,12 +2,43 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
+// Vérification de la saisie du reCAPTCHA
+if (isset($_POST['g-recaptcha-response'])) {
+    $token = $_POST['g-recaptcha-response'];
+    $secretKey = '6LfpN2QpAAAAAF6lmuCFTukw2i8AiG0Ehb8BbBFq'; // Remplacez par votre clé secrète reCAPTCHA
+    $url = 'https://www.google.com/recaptcha/api/siteverify';
+    $data = array(
+        'secret' => $secretKey,
+        'response' => $token
+    );
+    $options = array(
+        'http' => array(
+            'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+            'method' => 'POST',
+            'content' => http_build_query($data)
+        )
+    );
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    $response = json_decode($result);
+
+    // Vérification que le CAPTCHA a été validé
+    if (!$response->success || $response->score < 0.5) {
+        echo 'Veuillez confirmer que vous n\'êtes pas un robot.';
+        exit;
+    }
+} else {
+    echo 'Veuillez valider le CAPTCHA.';
+    exit;
+}
+
 // PSEUDO
 $pseudoMemb = ctrlSaisies($_POST['pseudoMemb']); // ENTRE 6-70 CARACS
 
 // Validation longueur du pseudo
 if (strlen($pseudoMemb) < 6 || strlen($pseudoMemb) > 70) {
-    echo 'Erreur, le pseudo doit contenir entre 6 et 70 caractères.';
+    echo 'Erreur, le pseudo doit contenir entre 6 et 70 caractères.<br>';
+    exit;
 } else {
     echo 'Le pseudo est bon<br>';
 }
@@ -15,9 +46,9 @@ if (strlen($pseudoMemb) < 6 || strlen($pseudoMemb) > 70) {
 // Vérification de la disponibilité du pseudo
 $verif = sql_select('MEMBRE', 'pseudoMemb', "pseudoMemb = '$pseudoMemb'");
 
-if ($verif != NULL){
-    echo 'Veuillez choisir un pseudo disponible.';
-    $pseudoMemb = null;
+if ($verif != NULL) {
+    echo 'Veuillez choisir un pseudo disponible.<br>';
+    exit;
 }
 
 // PRENOM
@@ -32,26 +63,26 @@ $passMemb = ctrlSaisies($_POST['passMemb']); // 8-15 CARACS + MAJ / MIN / CHIFFR
 // Validation longueur du mot de passe
 if (strlen($passMemb) < 8 || strlen($passMemb) > 15) {
     echo 'Erreur, le mot de passe doit contenir entre 8 et 15 caractères.<br>';
-    $passMemb = null; 
+    exit;
 }
 
 // Vérification de la présence de majuscules, minuscules et chiffres
-if (!preg_match('/[A-Z]/', $passMemb) || !preg_match('/[a-z]/', $passMemb)){
+if (!preg_match('/[A-Z]/', $passMemb) || !preg_match('/[a-z]/', $passMemb)) {
     echo 'Erreur, le mot de passe doit contenir au moins une majuscule et une minuscule.<br>';
-    $passMemb = null;
+    exit;
 }
 
-if (!preg_match('/[0-9]/', $passMemb)){
+if (!preg_match('/[0-9]/', $passMemb)) {
     echo 'Erreur, le mot de passe doit contenir au moins un chiffre.<br>';
-    $passMemb = null;
+    exit;
 }
 
 // Confirmation du mot de passe
 $passMemb2 = ctrlSaisies($_POST['passMemb2']); // DOIT ÊTRE IDENTIQUE A PASSWORD
 
-if ($passMemb != $passMemb2){ 
+if ($passMemb != $passMemb2) { 
     echo 'Les mots de passe doivent être identiques.<br>';
-    $passMemb = null;
+    exit;
 }
 
 // Hachage du mot de passe
@@ -66,27 +97,28 @@ $eMailMemb2 = ctrlSaisies($_POST['eMailMemb2']); // DOIT Ê IDENTIQUE
 // Validation de l'email
 if (!filter_var($eMailMemb, FILTER_VALIDATE_EMAIL)) {
     echo "$eMailMemb n'est pas une adresse email valide.<br>";
-    $eMailMemb = null;
+    exit;
 } else {
     echo "$eMailMemb est une adresse email valide.<br>";
 }
 
-if ($eMailMemb != $eMailMemb2){
+if ($eMailMemb != $eMailMemb2) {
     echo 'Les adresses email doivent être identiques.<br>';
-    $eMailMemb = null;
+    exit;
 }
 
 // ACCORD DONNEES
 $accordMemb = ctrlSaisies($_POST['accordMemb']);
 $accordMemb2 = ctrlSaisies($_POST['accordMemb2']);
 
-if ($accordMemb != $accordMemb2){
+if ($accordMemb != $accordMemb2) {
     echo "Veuillez accepter les Conditions générales d'utilisation ET le partage de vos données.<br>";
-    $accordMemb = null;
+    exit;
 } 
 
 if ($accordMemb !== 'OUI') {
     echo 'Veuillez accepter de partager vos données.<br>';
+    exit;
 } else {
     $accordMemb = TRUE;
 }
@@ -107,7 +139,7 @@ $numMemb++;
 echo "Numéro d'adhérent : $numMemb<br>";
 
 // Insérer l'utilisateur dans la base de données si toutes les conditions sont remplies
-if (isset($pseudoMemb, $prenomMemb, $nomMemb, $passMemb, $eMailMemb, $accordMemb, $numStat)){
+if (isset($pseudoMemb, $prenomMemb, $nomMemb, $passMemb, $eMailMemb, $accordMemb, $numStat)) {
     if (!isset($_SESSION['numStat'])) {
         // Insérer le membre dans la base de données
         sql_insert('MEMBRE', 
@@ -116,7 +148,9 @@ if (isset($pseudoMemb, $prenomMemb, $nomMemb, $passMemb, $eMailMemb, $accordMemb
     } 
 
     header('Location: ../../views/frontend/profil.php');
+    exit;
 } else {
     echo '<br><br><p style="color:red;">Veuillez remplir tout le formulaire.</p>';
+    exit;
 }
 ?>
