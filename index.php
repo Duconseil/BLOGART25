@@ -16,6 +16,7 @@ if (isset($_GET['message']) && $_GET['message'] == 'connexion_reussie') {
 
 <!-- Le contenu principal de la page -->
 <div class="container">
+    <br>
     <h1>Bienvenue sur Retroscope</h1>
     <!-- Vous pouvez ajouter ici plus de contenu, des articles, etc. -->
     <p>Nous espérons que vous apprécierez votre visite sur notre blog !</p>
