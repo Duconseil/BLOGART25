@@ -58,9 +58,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $admin_exist = sql_select('MEMBRE', 'numMemb', "numStat = 1");
 
-    if (!empty($admin_exist) && $numStat == 1) { 
+    if (!empty($admin_exist) && $numStat == 1 && $currentStat != 1) { 
         $errors[] = "Il y a déjà un administrateur, vous ne pouvez pas en créer un autre.";
-        $numStat = null;
+        $numStat = $currentStat; // On garde l'ancien statut
     }
 
     // Si aucune erreur, mise à jour du membre
