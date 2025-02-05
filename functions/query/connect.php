@@ -8,6 +8,6 @@ function sql_connect(){
     if (strpos ($_SERVER['HTTP_HOST'], 'scalingo') !== false) {
         $DB = new PDO(dsn: 'mysql:host=' . SQL_HOST . ';charset=utf8;dbname=' . SQL_DB, . 'port=' . SQL_PORT, SQL_USER, SQL_PWD);
     } else {
-        $DB = new PDO(dsn: 'mysql:host=' . SQL_HOST . ';charset=utf8;dbname=' . SQL_DB, SQL_USER, SQL_PWD);
+        $DB = new PDO(dsn: 'mysql:host=' . SQL_HOST . ';charset=utf8; dbname=' . SQL_DB, SQL_USER, SQL_PWD);
     }
 }
