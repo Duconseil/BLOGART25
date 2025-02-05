@@ -18,70 +18,43 @@ if ($DB === null) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Vérification du reCAPTCHA
-    // if (isset($_POST['g-recaptcha-response'])) {
-    //     $token = $_POST['g-recaptcha-response'];
-    //     $secretKey = '[6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI]'; // Remplacez par votre clé secrète
-    //     $url = 'https://www.google.com/recaptcha/api/siteverify';
-    //     $data = array(
-    //         'secret' => $secretKey,
-    //         'response' => $token
-    //     );
-    //     $options = array(
-    //         'http' => array(
-    //             'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
-    //             'method' => 'POST',
-    //             'content' => http_build_query($data)
-    //         )
-    //     );
-    //     $context = stream_context_create($options);
-    //     $result = file_get_contents($url, false, $context);
-    //     $response = json_decode($result);
+    // Vérification des informations de connexion
+    if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"])) {
+        $pseudoMemb = trim($_POST["pseudoMemb"]);
+        $passMemb = trim($_POST["mot_de_passe"]);
 
-    //     if ($response->success && $response->score >= 0.5) {
-            // Le reCAPTCHA est validé, on vérifie les informations de connexion
-            if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"])) {
-                $pseudoMemb = trim($_POST["pseudoMemb"]);
-                $passMemb = trim($_POST["mot_de_passe"]);
+        try {
+            // Vérifier si le pseudo existe
+            $sql = "SELECT * FROM membre WHERE pseudoMemb = :pseudoMemb";
+            $stmt = $DB->prepare($sql);
+            $stmt->execute(['pseudoMemb' => $pseudoMemb]);
+            $user = $stmt->fetch();
 
-                try {
-                    // Vérifier si le pseudo existe
-                    $sql = "SELECT * FROM membre WHERE pseudoMemb = :pseudoMemb";
-                    $stmt = $DB->prepare($sql);
-                    $stmt->execute(['pseudoMemb' => $pseudoMemb]);
-                    $user = $stmt->fetch();
+            if ($user) {
+                // Vérifier le mot de passe avec password_verify
+                if (password_verify($passMemb, $user['passMemb'])) {
+                    session_start();
+                    $_SESSION['pseudoMemb'] = $user['pseudoMemb'];
+                    $_SESSION['prenomMemb'] = $user['prenomMemb'];
+                    $_SESSION['nomMemb'] = $user['nomMemb'];
+                    $_SESSION['numStat'] = $user['numStat'];  // Ajout du statut de l'utilisateur
 
-                    if ($user) {
-                        // Vérifier le mot de passe avec password_verify
-                        if (password_verify($passMemb, $user['passMemb'])) {
-                            session_start();
-                            $_SESSION['pseudoMemb'] = $user['pseudoMemb'];
-                            $_SESSION['prenomMemb'] = $user['prenomMemb'];
-                            $_SESSION['nomMemb'] = $user['nomMemb'];
-                            header("Location: http://localhost:8888?message=connexion_reussie");
-                            exit;
-                        } else {
-                            echo "<p style='color:red;'>Mot de passe incorrect.</p>";
-                        }
-                    } else {
-                        echo "<p style='color:red;'>Pseudo non trouvé.</p>";
-                    }
-                } catch (PDOException $e) {
-                    echo "<p style='color:red;'>Erreur de requête : " . $e->getMessage() . "</p>";
+                    header("Location: http://localhost:8888?message=connexion_reussie");
+                    exit;
+                } else {
+                    echo "<p style='color:red;'>Mot de passe incorrect.</p>";
                 }
             } else {
-                echo "<p style='color:red;'>Veuillez remplir tous les champs.</p>";
+                echo "<p style='color:red;'>Pseudo non trouvé.</p>";
             }
-        // } else {
-        //     // Le CAPTCHA a échoué, message d'erreur
-        //     echo "<p style='color:red;'>Veuillez confirmer que vous n'êtes pas un robot.</p>";
-        // }
-    // } else {
-    //     echo "<p style='color:red;'>Veuillez valider le CAPTCHA.</p>";
-    // }
+        } catch (PDOException $e) {
+            echo "<p style='color:red;'>Erreur de requête : " . $e->getMessage() . "</p>";
+        }
+    } else {
+        echo "<p style='color:red;'>Veuillez remplir tous les champs.</p>";
+    }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -113,16 +86,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="checkbox" onclick="togglePassword('mot_de_passe')"> Afficher Mot de passe
             </div>
 
-            <!-- Ajout du bouton reCaptcha
-            <div class="g-recaptcha" data-sitekey="[6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI]" data-callback="onSubmit" data-action="submit"></div>
-            <br>
-            -->
-
             <div class="form-group">
                 <button type="submit">Se connecter</button>
             </div>
         </form>
     </div>
+
+    <?php
+    // Vérification de l'authentification et de l'affichage du bouton Admin
+    if (isset($_SESSION['pseudoMemb']) && $_SESSION['numStat'] != 3) {
+        echo '<button class="admin-button"><a href="admin_dashboard.php">Accéder à l\'Admin</a></button>';
+    }
+    ?>
+
 </body>
 </html>
 
@@ -164,5 +140,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     .form-group button:hover {
         background-color: #0056b3;
+    }
+
+    .admin-button {
+        margin-top: 20px;
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 16px;
+    }
+
+    .admin-button:hover {
+        background-color: #218838;
     }
 </style>

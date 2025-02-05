@@ -1,13 +1,17 @@
 <?php
 require_once 'config.php'; // Charger la configuration
 
-// Vérifie si la session n'est pas déjà active avant de la démarrer
+// Vérifier si la session n'est pas déjà active avant de la démarrer
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
+// Vérifier si l'utilisateur est connecté et si la session contient les informations nécessaires
 $pseudo = $_SESSION['pseudoMemb'] ?? null;
-$numStat = $_SESSION['numStat'] ?? 3;
+$numStat = $_SESSION['numStat'] ?? null;  // Récupérer numStat ou null si non défini
+
+// Déboguer les valeurs de session (enlève ce bloc après test)
+// var_dump($pseudo, $numStat); // Vérifier que ces valeurs sont bien définies et correctes
 ?>
 
 <!DOCTYPE html>
@@ -26,9 +30,9 @@ $numStat = $_SESSION['numStat'] ?? 3;
 
 <nav class="navbar navbar-expand-lg bg-light">
   <div class="container-fluid">
-  <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="#">
       <img src="/src/images/Retroscope.png" alt="Blog'Art 25" style="height: 40px; width: auto;">
-  </a>
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -61,18 +65,22 @@ $numStat = $_SESSION['numStat'] ?? 3;
           <span class="ms-2 fw-bold"><?php echo htmlspecialchars($pseudo); ?></span>
         </div>
         <a class="btn btn-danger m-1" href="/api/security/disconnect.php" role="button">Déconnexion</a>
+
+        <!-- Afficher le bouton Admin seulement si l'utilisateur n'est pas un membre (numStat != 3) -->
+        <?php if ($numStat !== 3): ?>
+          <a class="btn btn-primary" href="http://localhost:8888/views/backend/dashboard.php" role="button">Admin</a>
+        <?php endif; ?>
+
       <?php else: ?>
         <a class="btn btn-primary m-1" href="/views/backend/security/login.php" role="button">Login</a>
         <a class="btn btn-dark m-1" href="/views/backend/security/signup.php" role="button">Sign up</a>
-      <?php endif; ?>
-      
-      <?php if ($numStat == 1 || $numStat == 2): ?>
-        <a class="btn btn-primary" href="/views/backend/dashboard.php" role="button">Admin</a>
       <?php endif; ?>
     </div>
   </div>
 </nav>
 
+<!-- Scripts Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Kw1Wrh/tb6SVkzF6FA5Hq5j5jzgFgnxP/1R" crossorigin="anonymous"></script>
+
 </body>
 </html>
