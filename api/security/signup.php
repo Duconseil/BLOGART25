@@ -105,22 +105,11 @@ if ($eMailMemb != $eMailMemb2){
 }
 
 // ACCORD DONNEES
-$accordMemb = ctrlSaisies($_POST['accordMemb']);
-$accordMemb2 = ctrlSaisies($_POST['accordMemb2']);
-
-if ($accordMemb != $accordMemb2){
-    echo "Veuillez accepter les Conditions générales d'utilisation ET le partage de vos données.<br>";
-    $accordMemb = null;
-} 
-
-if ($accordMemb !== 'OUI') {
-    echo 'Veuillez accepter de partager vos données.<br>';
-} else {
-    $accordMemb = TRUE;
-}
+$accordMemb = $_POST['acceptedonnees'];
 
 // STATUT
-$numStat = 1; // Définition du statut "membre" par défaut
+$numStat = 3; // Définition du statut "membre" ici (3 représente un membre)
+
 
 // DATE CREATION
 $dtCreaMemb = date_create()->format('Y-m-d H:i:s');
@@ -143,7 +132,8 @@ if (isset($pseudoMemb, $prenomMemb, $nomMemb, $passMemb, $eMailMemb, $accordMemb
         "'$prenomMemb', '$nomMemb', '$pseudoMemb', '$hash_password', '$eMailMemb', '$dtCreaMemb', '$accordMemb', '$numMemb', '$dtMajMemb', '$numStat'");
     } 
 
-    header('Location: ../../views/frontend/profil.php');
+    // Rediriger l'utilisateur vers la page de profil
+    //header('Location: ../../views/frontend/profil.php');
 } else {
     echo '<br><br><p style="color:red;">Veuillez remplir tout le formulaire.</p>';
 }

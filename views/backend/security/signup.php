@@ -66,8 +66,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<p style='color:red;'>Ce pseudonyme est déjà pris. Veuillez en choisir un autre.</p>";
                         } else {
                             // Ajout de numStat avec une valeur par défaut (1 pour "membre")
-                            $sql = "INSERT INTO membre (pseudoMemb, passMemb, prenomMemb, nomMemb, eMailMemb, numStat) 
-                                    VALUES (:pseudoMemb, :passMemb, :prenomMemb, :nomMemb, :eMailMemb, :numStat)";
+                            $sql = "INSERT INTO membre (pseudoMemb, passMemb, prenomMemb, nomMemb, eMailMemb, numStat, accordMemb) 
+                                    VALUES (:pseudoMemb, :passMemb, :prenomMemb, :nomMemb, :eMailMemb, :numStat, :accordMemb)";
                             $stmt = $DB->prepare($sql);
                             $stmt->execute([
                                 'pseudoMemb' => $pseudoMemb,
@@ -75,7 +75,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 'prenomMemb' => $prenomMemb,
                                 'nomMemb' => $nomMemb,
                                 'eMailMemb' => $eMailMemb,
-                                'numStat' => 1 // Valeur par défaut pour "membre"
+                                'accordMemb' => $_POST['acceptedonnees'],
+
+
+                                'numStat' => 3 // Valeur par défaut pour "membre"
                             ]);
                             echo "<p style='color:green;'>Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.</p>";
                         }
@@ -150,8 +153,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="form-group">
                 <label>J'accepte que mes données soient conservées</label>
-                <input type="radio" name="accepte_donnees" value="oui" required> Oui
-                <input type="radio" name="accepte_donnees" value="non" required> Non
+                        <input type="radio" id="validoui"checked name="acceptedonnees" value="1" />
+                        <label for="validoui">J'accepte</label> <br>
+                        <input type="radio" id="validnon" name="acceptedonnees" value="0" />
+                        <label for="validnon">Je refuse</label><br> <br>
             </div>
 
             <!-- reCAPTCHA -->
