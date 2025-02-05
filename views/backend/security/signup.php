@@ -46,7 +46,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $prenomMemb = trim($_POST["prenom"]);
                 $nomMemb = trim($_POST["nom"]);
                 $eMailMemb = trim($_POST["eMailMemb"]);
-                $statut = (int)$_POST["statut"]; // Assurez-vous que le statut est un entier valide
 
                 // Vérifier que les mots de passe sont identiques
                 if ($passMemb !== $passMembConfirm) {
@@ -156,14 +155,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="mot_de_passe_confirm">Confirmez Mot de passe</label>
                 <input type="password" id="mot_de_passe_confirm" name="mot_de_passe_confirm" placeholder="Confirmez Mot de passe" minlength="8" maxlength="15" required>
                 <input type="checkbox" onclick="togglePassword('mot_de_passe_confirm')"> Afficher Mot de passe
-            </div>
-
-            <div class="form-group">
-                <label for="statut">Statut</label>
-                <select class="form-control" name="statut" id="statut" required>
-                    <option value="3">Membre</option>
-                    <option value="2">Modérateur</option>
-                </select>
             </div>
 
             <div class="form-group">
