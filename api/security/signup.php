@@ -2,6 +2,34 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
+// Vérification du reCAPTCHA
+if (isset($_POST['g-recaptcha-response'])) {
+    $token = $_POST['g-recaptcha-response'];
+    $url = 'https://www.google.com/recaptcha/api/siteverify';
+    $data = array(
+        'secret' => '[6Lej580qAAAAAJJoCPyuzSi5-Hs-lFr9ylkq_oMD]', // Remplacez par votre clé secrète reCAPTCHA
+        'response' => $token
+    );
+    $options = array(
+        'http' => array(
+            'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+            'method' => 'POST',
+            'content' => http_build_query($data)
+        )
+    );
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    $response = json_decode($result);
+
+    // Vérification de la réponse reCAPTCHA
+    if ($response->success && $response->score >= 0.5) {
+        // Le test est réussi, on peut continuer
+    } else {
+        echo 'Vous êtes un robot, veuillez réessayer.<br>';
+        exit;
+    }
+}
+
 // PSEUDO
 $pseudoMemb = ctrlSaisies($_POST['pseudoMemb']); // ENTRE 6-70 CARACS
 
@@ -15,7 +43,7 @@ if (strlen($pseudoMemb) < 6 || strlen($pseudoMemb) > 70) {
 // Vérification de la disponibilité du pseudo
 $verif = sql_select('MEMBRE', 'pseudoMemb', "pseudoMemb = '$pseudoMemb'");
 
-if ($verif != NULL){
+if ($verif != NULL) {
     echo 'Veuillez choisir un pseudo disponible.';
     $pseudoMemb = null;
 }

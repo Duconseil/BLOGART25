@@ -19,26 +19,26 @@ if ($DB === null) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Vérification du reCAPTCHA
-    if (isset($_POST['g-recaptcha-response'])) {
-        $token = $_POST['g-recaptcha-response'];
-        $secretKey = '[6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI]'; // Remplacez par votre clé secrète
-        $url = 'https://www.google.com/recaptcha/api/siteverify';
-        $data = array(
-            'secret' => $secretKey,
-            'response' => $token
-        );
-        $options = array(
-            'http' => array(
-                'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
-                'method' => 'POST',
-                'content' => http_build_query($data)
-            )
-        );
-        $context = stream_context_create($options);
-        $result = file_get_contents($url, false, $context);
-        $response = json_decode($result);
+    // if (isset($_POST['g-recaptcha-response'])) {
+    //     $token = $_POST['g-recaptcha-response'];
+    //     $secretKey = '[6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI]'; // Remplacez par votre clé secrète
+    //     $url = 'https://www.google.com/recaptcha/api/siteverify';
+    //     $data = array(
+    //         'secret' => $secretKey,
+    //         'response' => $token
+    //     );
+    //     $options = array(
+    //         'http' => array(
+    //             'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+    //             'method' => 'POST',
+    //             'content' => http_build_query($data)
+    //         )
+    //     );
+    //     $context = stream_context_create($options);
+    //     $result = file_get_contents($url, false, $context);
+    //     $response = json_decode($result);
 
-        if ($response->success && $response->score >= 0.5) {
+    //     if ($response->success && $response->score >= 0.5) {
             // Le reCAPTCHA est validé, on vérifie les informations de connexion
             if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"])) {
                 $pseudoMemb = trim($_POST["pseudoMemb"]);
@@ -72,13 +72,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 echo "<p style='color:red;'>Veuillez remplir tous les champs.</p>";
             }
-        } else {
-            // Le CAPTCHA a échoué, message d'erreur
-            echo "<p style='color:red;'>Veuillez confirmer que vous n'êtes pas un robot.</p>";
-        }
-    } else {
-        echo "<p style='color:red;'>Veuillez valider le CAPTCHA.</p>";
-    }
+        // } else {
+        //     // Le CAPTCHA a échoué, message d'erreur
+        //     echo "<p style='color:red;'>Veuillez confirmer que vous n'êtes pas un robot.</p>";
+        // }
+    // } else {
+    //     echo "<p style='color:red;'>Veuillez valider le CAPTCHA.</p>";
+    // }
 }
 ?>
 
@@ -113,9 +113,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="checkbox" onclick="togglePassword('mot_de_passe')"> Afficher Mot de passe
             </div>
 
-            <!-- Ajout du bouton reCaptcha -->
-    <div class="g-recaptcha" data-sitekey="[6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI]" data-callback="onSubmit" data-action="submit"></div>
-    <br>
+            <!-- Ajout du bouton reCaptcha
+            <div class="g-recaptcha" data-sitekey="[6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI]" data-callback="onSubmit" data-action="submit"></div>
+            <br>
+            -->
 
             <div class="form-group">
                 <button type="submit">Se connecter</button>
