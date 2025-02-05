@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blog'Art</title>
+    <title>Retroscope</title>
     <!-- Load CSS -->
     <link rel="stylesheet" href="src/css/style.css" />
     <!-- Bootstrap CSS only -->
@@ -17,7 +17,7 @@ require_once 'config.php';
 <body>
 <nav class="navbar navbar-expand-lg bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Blog'Art 25</a>
+    <a class="navbar-brand" href="#">Retroscope</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
