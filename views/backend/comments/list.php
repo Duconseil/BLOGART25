@@ -166,7 +166,7 @@ $commentsArchive = array_filter($comments, fn($comment) => $comment['delLogiq'] 
     /* Include all the CSS from your provided style tag for customization */
     .btn-warning-custom {
         background-color: #f0ad4e;
-        color: white;
+        color: white !important;  /* Ensure text stays white */
         border: none;
         padding: 10px 20px;
         text-decoration: none;
@@ -178,7 +178,7 @@ $commentsArchive = array_filter($comments, fn($comment) => $comment['delLogiq'] 
     }
     .btn-primary-custom {
         background-color: #007bff;
-        color: white;
+        color: white !important;  /* Ensure text stays white */
         border: none;
         padding: 10px 20px;
         text-decoration: none;
@@ -190,7 +190,7 @@ $commentsArchive = array_filter($comments, fn($comment) => $comment['delLogiq'] 
     }
     .btn-danger-custom {
         background-color: #dc3545;
-        color: white;
+        color: white !important;  /* Ensure text stays white */
         border: none;
         padding: 10px 20px;
         text-decoration: none;
@@ -202,7 +202,7 @@ $commentsArchive = array_filter($comments, fn($comment) => $comment['delLogiq'] 
     }
     .btn-success-custom {
         background-color: #28a745;
-        color: white;
+        color: white !important;  /* Ensure text stays white */
         border: none;
         padding: 10px 20px;
         text-decoration: none;
