@@ -2,7 +2,7 @@
 require_once 'header.php';
 sql_connect();
 
-$allarticles = sql_select(table: 'ARTICLE', '*', limit: '4');
+$allarticles = sql_select(table: 'ARTICLE', '*');
 
 //var_dump($allarticle);
 
