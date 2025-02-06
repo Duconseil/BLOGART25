@@ -49,7 +49,7 @@ $numStat = $_SESSION['numStat'] ?? null;  // Récupérer numStat ou null si non 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    <a class="nav-link active" aria-current="page" href="/">Acceuil</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/views/frontend/actors.php">Acteurs</a>
@@ -84,8 +84,8 @@ $numStat = $_SESSION['numStat'] ?? null;  // Récupérer numStat ou null si non 
                 <?php endif; ?>
 
             <?php else: ?>
-                <a class="btn btn-primary m-1" href="/views/backend/security/login.php" role="button">Login</a>
-                <a class="btn btn-dark m-1" href="/views/backend/security/signup.php" role="button">Sign up</a>
+                <a class="btn btn-primary m-1" href="/views/backend/security/login.php" role="button">Se connecter</a>
+                <a class="btn btn-dark m-1" href="/views/backend/security/signup.php" role="button">S'incrire</a>
             <?php endif; ?>
         </div>
     </div>
