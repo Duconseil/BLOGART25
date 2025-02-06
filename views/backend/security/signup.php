@@ -1,98 +1,14 @@
 <?php
+session_start();
 include '../../../header.php';
 
-$recaptchaSecret = '6Lej580qAAAAAJJoCPyuzSi5-Hs-lFr9ylkq_oMD'; 
+// Récupération des données de session
+$errors = $_SESSION['errors'] ?? [];
+$success = $_SESSION['success'] ?? null;
+$old = $_SESSION['old'] ?? [];
 
-try {
-    $DB = new PDO('mysql:host=localhost;dbname=BLOGART25', 'root', 'root');
-    $DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Impossible de se connecter à la base de données: " . $e->getMessage());
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Vérification du reCAPTCHA
-    /*if (isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])) {
-        $recaptchaResponse = $_POST['g-recaptcha-response'];
-        
-        // Envoi de la requête de vérification à Google
-        $url = 'https://www.google.com/recaptcha/api/siteverify';
-        $data = [
-            'secret' => $recaptchaSecret,
-            'response' => $recaptchaResponse
-        ];
-
-        // Utilisation de cURL pour vérifier la réponse
-        $options = [
-            'http' => [
-                'method' => 'POST',
-                'content' => http_build_query($data),
-                'header' => "Content-Type: application/x-www-form-urlencoded\r\n"
-            ]
-        ];
-        $context = stream_context_create($options);
-        $verify = file_get_contents($url, false, $context);
-        $captchaSuccess = json_decode($verify)->success;
-
-        // Si le reCAPTCHA échoue
-        if (!$captchaSuccess) {
-            echo "<p style='color:red;'>La vérification reCAPTCHA a échoué. Veuillez réessayer.</p>";
-        } else {*/
-            // Si reCAPTCHA validé, continuer avec l'enregistrement du compte
-            if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"]) && !empty($_POST["mot_de_passe_confirm"]) &&
-                !empty($_POST["prenom"]) && !empty($_POST["nom"]) && !empty($_POST["eMailMemb"]) && !empty($_POST["eMailMemb_confirm"])) {
-
-                $pseudoMemb = trim($_POST["pseudoMemb"]);
-                $passMemb = trim($_POST["mot_de_passe"]);
-                $passMembConfirm = trim($_POST["mot_de_passe_confirm"]);
-                $prenomMemb = trim($_POST["prenom"]);
-                $nomMemb = trim($_POST["nom"]);
-                $eMailMemb = trim($_POST["eMailMemb"]);
-                $eMailMembConfirm = trim($_POST["eMailMemb_confirm"]);
-
-                if ($passMemb !== $passMembConfirm) {
-                    echo "<p style='color:red;'>Les mots de passe ne correspondent pas.</p>";
-                } elseif ($eMailMemb !== $eMailMembConfirm) {
-                    echo "<p style='color:red;'>Les emails ne correspondent pas.</p>";
-                } else {
-                    $passMembHashed = password_hash($passMemb, PASSWORD_BCRYPT);
-
-                    try {
-                        $sql = "SELECT * FROM membre WHERE pseudoMemb = :pseudoMemb";
-                        $stmt = $DB->prepare($sql);
-                        $stmt->execute(['pseudoMemb' => $pseudoMemb]);
-                        
-                        if ($stmt->fetch()) {
-                            echo "<p style='color:red;'>Ce pseudonyme est déjà pris. Veuillez en choisir un autre.</p>";
-                        } else {
-                            // Ajout de numStat avec une valeur par défaut (1 pour "membre")
-                            $sql = "INSERT INTO membre (pseudoMemb, passMemb, prenomMemb, nomMemb, eMailMemb, numStat, accordMemb) 
-                                    VALUES (:pseudoMemb, :passMemb, :prenomMemb, :nomMemb, :eMailMemb, :numStat, :accordMemb)";
-                            $stmt = $DB->prepare($sql);
-                            $stmt->execute([
-                                'pseudoMemb' => $pseudoMemb,
-                                'passMemb' => $passMembHashed,
-                                'prenomMemb' => $prenomMemb,
-                                'nomMemb' => $nomMemb,
-                                'eMailMemb' => $eMailMemb,
-                                'accordMemb' => $_POST['acceptedonnees'],
-
-
-                                'numStat' => 3 // Valeur par défaut pour "membre"
-                            ]);
-                            echo "<p style='color:green;'>Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.</p>";
-                        }
-                    } catch (PDOException $e) {
-                        echo "<p style='color:red;'>Erreur de requête : " . $e->getMessage() . "</p>";
-                    }
-                }
-            } else {
-                echo "<p style='color:red;'>Veuillez remplir tous les champs.</p>";
-            }
-        /*} else {
-            echo "<p style='color:red;'>Veuillez compléter la vérification reCAPTCHA.</p>";
-        }*/
-}
+// Nettoyage des données de session après récupération
+unset($_SESSION['errors'], $_SESSION['success'], $_SESSION['old']);
 ?>
 
 
@@ -158,17 +74,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="radio" id="validnon" name="acceptedonnees" value="0" />
                         <label for="validnon">Je refuse</label><br> <br>
             </div>
-
-            <!-- reCAPTCHA -->
-            <!--
-            <div class="form-group recaptcha-container">
-                <div class="g-recaptcha" 
-                        data-sitekey="6Lej580qAAAAAA0kk8ZyqeYBfdvf672_e7j_gamY" 
-                        data-callback="onSubmit" 
-                        data-action="submit">
-                </div>
-            </div>
-            -->
 
             <div class="form-group">
                 <button type="submit">S'inscrire</button>
