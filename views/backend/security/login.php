@@ -1,5 +1,4 @@
 <?php
-// Inclure le fichier de connexion et les fonctions nécessaires
 include '../../../header.php';
 
 // Vérifier si une session est déjà active
@@ -8,29 +7,30 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Vérification des champs du formulaire
     if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"])) {
         $pseudoMemb = trim($_POST["pseudoMemb"]);
         $passMemb = trim($_POST["mot_de_passe"]);
 
         try {
-            // Utilisation d'une requête préparée pour récupérer les informations de l'utilisateur
-            // La fonction sql_select devrait exécuter la requête correctement
+            // Connexion à la base de données avec PDO
+            global $DB;
+
+            // Requête préparée pour récupérer l'utilisateur
             $sql = "SELECT * FROM membre WHERE pseudoMemb = ?";
-            $user = sql_select($sql, [$pseudoMemb]);
+            $stmt = $DB->prepare($sql);
+            $stmt->execute([$pseudoMemb]);
+            $user = $stmt->fetch();
 
-            if ($user && count($user) > 0) {
-                $user = $user[0]; // Extraire le premier (et unique) résultat
-
+            if ($user) {
                 // Vérification du mot de passe
                 if (password_verify($passMemb, $user['passMemb'])) {
-                    // Stocker les infos en session
+                    // Stocker les informations en session
                     $_SESSION['pseudoMemb'] = $user['pseudoMemb'];
                     $_SESSION['prenomMemb'] = $user['prenomMemb'];
                     $_SESSION['nomMemb'] = $user['nomMemb'];
                     $_SESSION['numStat'] = $user['numStat']; // Le statut de l'utilisateur
 
-                    // Charger tous les statuts disponibles
+                    // Charger tous les statuts
                     $statuts = sql_select("SELECT * FROM STATUT");
 
                     // Rediriger vers la page d'accueil ou autre
@@ -50,6 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
 
 
 
