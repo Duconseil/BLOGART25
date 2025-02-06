@@ -4,8 +4,12 @@ include '../../../header.php';
 
 global $DB;
 
-$password = $_POST["mot_de_passe"];
-$pseudo = $_POST["pseudoMemb"];
+
+if(!empty($_POST)) {
+    $password = $_POST["mot_de_passe"];
+    $pseudo = $_POST["pseudoMemb"];
+}
+
 
 
 
@@ -28,12 +32,12 @@ if ($connexion && $connexion[0]) {
         $_SESSION['flash']['danger'] = 'Vous êtes connecté';
     } else {
         header('Location: ../../views/backend/security/login.php');
-
+        
     }
 } else {
-    echo "L'utilisateur n'existe pas.";
+    //echo "L'utilisateur n'existe pas.";
 }
-var_dump($_SESSION);
+//var_dump($_SESSION);
 ?>
 
 <!DOCTYPE html>
