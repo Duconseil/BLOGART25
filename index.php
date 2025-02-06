@@ -2,6 +2,10 @@
 require_once 'header.php';
 sql_connect();
 
+$allarticles = sql_select('ARTICLE', '*');
+
+//var_dump($allarticle);
+
 
 ?>
 
@@ -212,68 +216,21 @@ sql_connect();
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
                 <!-- Articles Classiques -->
+                <?php foreach ($allarticles as $allarticle) : ?>
                 <div class="post-preview">
-                    <a href="/views/frontend/evenement.php">
-                        <img src="src/images/Photo1.jpg" alt="Article Image">
-                        <h2 class="post-title">Michel CORAJOUD, l'artisan de vos balades à Bordeaux.</h2>
+                    <a href="/views/frontend/evenement.php?numArt=<?php echo $allarticle['numArt']; ?>">
+                        <img src="src/uploads/<?php echo $allarticle['urlPhotArt'];?>" alt="Article Image">
+                        <h2 class="post-title"><?php echo $allarticle['libTitrArt'];?></h2>
                     </a>
-                    <h3 class="post-subtitle">À partir des années 2000, le paysagiste donne un nouveau souffle aux balades bordelaises...</h3>
-                    <p class="post-meta">Posté par <a href="#!">Rétroscope</a>, le 5 février 2025</p>
+                    <h3 class="post-subtitle"><?php echo $allarticle['libChapoArt'];?></h3>
+                    <p class="post-meta">Posté le <a href="#!"><?php echo $allarticle['dtCreaArt'];?></a></p>
                 </div>
-                <hr class="my-4" />
-                <div class="post-preview">
-                    <a href="/views/frontend/acteur.php">
-                        <img src="src/images/Photo2.jpg" alt="Article Image">
-                        <h2 class="post-title">Hélène et Lucien, l'Amour de Bordeaux.</h2>
-                    </a>
-                    <h3 class="post-subtitle">Bordeaux : le témoignage d'Hélène et Lucien mêle souvenirs nostalgiques et vision sur la ville d’aujourd’hui...</h3>
-                    <p class="post-meta">Posté par <a href="#!">Rétroscope</a>, le 6 février 2025</p>
+                <?php endforeach;?>
                 </div>
-                <hr class="my-4" />
-
-                <!-- Section Insolite -->
-                <div class="section-insolite">
-                    <!-- Articles insolites à gauche -->
-                    <div class="insolite-articles">
-
-                        <div class="post-preview">
-                            <a href="http://localhost/insolite2.php">
-                                <img src="src/images/Photo4.jpg" alt="Article Insolite">
-                                <h2 class="post-title">Échoppes seniors, l’art de sociabiliser pour nos aînés.</h2>
-                            </a>
-                            <h3 class="post-subtitle">Depuis septembre dernier, 25 structures ont été mises en place à travers la ville pour permettre aux seniors de s’épanouir...</h3>
-                            <p class="post-meta">Posté par <a href="#!">Rétroscope</a>, le 7 février 2025</p>
-                        </div>
-                        <hr class="my-4" />
-                        <div class="post-preview">
-                            <a href="http://localhost/insolite1.php">
-                                <img src="src/images/Photo3.jpg" alt="Article Insolite">
-                                <h2 class="post-title">Bordeaux : Vieillir le temps d’un trajet en tramway.</h2>
-                            </a>
-                            <h3 class="post-subtitle">Décembre 2023 : TBM transforme ses voyageurs de la ligne C, en nos grands parents...</h3>
-                            <p class="post-meta">Posté par <a href="#!">Rétroscope</a>, le 7 février 2025</p>
-                        </div>
-                        <hr class="my-4" />
-                    </div>
-
-                    <!-- Titre "Section Insolite" à droite -->
-                    <!-- Section Insolite -->
-                    <div class="section-insolite">
-                        <!-- Articles insolites à gauche -->
-                        <div class="insolite-articles">
-                            <!-- Contenu des articles -->
-                        </div>
-                            <!-- Ajout du logo sous le titre -->
-                            <img src="/src/images/Logo2.png" alt="Logo Insolite" class="logo-insolite">
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Pager -->
                 <div class="d-flex justify-content-end mb-4">
                     <a class="btn btn-primary text-uppercase" href="#!">Anciens posts →</a>
                 </div>
-
             </div>
         </div>
     </div>

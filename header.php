@@ -20,7 +20,7 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
     <title>Blog'Art</title>
 
     <!-- Load CSS -->
-    <link rel="stylesheet" href="src/css/style.css" />
+    <link rel="stylesheet" href="/src/css/style.css" />
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" 
@@ -53,16 +53,36 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
                     <a class="nav-link active" aria-current="page" href="/">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/views/frontend/acteur.php">Acteurs</a>
+                    <a class="nav-link" href="/views/frontend/evenement.php?numArt=1">
+                    Acteurs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/views/frontend/evenement.php">Événements</a>
+                    <a class="nav-link" href="/views/frontend/evenement.php?numArt=2">Événements</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/views/frontend/original.php">Insolite</a>
+                    <a id="open-menu" class="nav-link" href="#">Insolite</a>
                 </li>
+                <div class="menu-open">
+                <li class="nav-item">
+                    <a class="nav-link" href="/views/frontend/evenement.php?numArt=3">Insolite n°1</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/views/frontend/evenement.php?numArt=4">Insolite n°2</a>
+                </li>
+                </div>
+                
             </ul>
         </div>
+
+        <script>
+    const openMenu = document.getElementById('open-menu');
+    const menu = document.querySelector('.menu-open'); // Corrigé avec le point
+
+    openMenu.addEventListener('click', (event) => {
+        event.preventDefault(); // Empêche le lien de recharger la page
+        menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+    });
+        </script>
 
         <!-- Zone de droite -->
         <div class="d-flex align-items-center">
