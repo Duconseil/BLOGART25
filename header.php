@@ -35,7 +35,7 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
         
         <!-- Logo -->
         <a class="navbar-brand" href="#">
-            <img src="/src/images/Retroscope.png" alt="Blog'Art 25" style="height: 50px; width: auto;">
+            <img src="/src/images/Retroscope.png" alt="Blog'Art 25" style="height: 60px; width: auto;">
         </a>
 
         <!-- Bouton pour mobile -->
@@ -49,7 +49,7 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Acceuil</a>
+                    <a class="nav-link active" aria-current="page" href="/">Accueil</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/views/frontend/actors.php">Acteurs</a>
