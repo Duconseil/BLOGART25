@@ -57,6 +57,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $nomMemb = trim($_POST["nom"]);
                 $eMailMemb = trim($_POST["eMailMemb"]);
                 $eMailMembConfirm = trim($_POST["eMailMemb_confirm"]);
+                $numStat = 3;
+                $optin = $_POST['acceptedonnees'];
 
                 if ($passMemb !== $passMembConfirm) {
                     echo "<p style='color:red;'>Les mots de passe ne correspondent pas.</p>";
@@ -64,7 +66,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo "<p style='color:red;'>Les emails ne correspondent pas.</p>";
                 } else {
                     $passMembHashed = password_hash($passMemb, PASSWORD_BCRYPT);
-
                     try {
                         $sql = "SELECT * FROM MEMBRE WHERE pseudoMemb = :pseudoMemb";
                         $stmt = $DB->prepare($sql);
@@ -73,21 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if ($stmt->fetch()) {
                             echo "<p style='color:red;'>Ce pseudonyme est déjà pris. Veuillez en choisir un autre.</p>";
                         } else {
-                            // Ajout de numStat avec une valeur par défaut (1 pour "membre")
-                            $sql = "INSERT INTO MEMBRE (pseudoMemb, passMemb, prenomMemb, nomMemb, eMailMemb, numStat, accordMemb) 
-                                    VALUES (:pseudoMemb, :passMemb, :prenomMemb, :nomMemb, :eMailMemb, :numStat, :accordMemb)";
-                            $stmt = $DB->prepare($sql);
-                            $stmt->execute([
-                                'pseudoMemb' => $pseudoMemb,
-                                'passMemb' => $passMembHashed,
-                                'prenomMemb' => $prenomMemb,
-                                'nomMemb' => $nomMemb,
-                                'eMailMemb' => $eMailMemb,
-                                'accordMemb' => $_POST['acceptedonnees'],
-
-
-                                'numStat' => 3 // Valeur par défaut pour "membre"
-                            ]);
+                                $inscription = sql_insert('MEMBRE', 'pseudoMemb, prenomMemb, nomMemb, passMemb, eMailMemb, numStat, accordMemb', "'$pseudoMemb', '$prenomMemb', '$nomMemb', '$passMembHashed', '$eMailMemb', '$numStat', '$optin'");
 
                             echo "<p style='color:green;'>Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.</p>";
                         }
