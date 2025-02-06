@@ -30,10 +30,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['nomMemb'] = $user['nomMemb'];
                     $_SESSION['numStat'] = $user['numStat']; // Le statut de l'utilisateur
 
-                    // Charger tous les statuts
-                    $statuts = sql_select("SELECT * FROM STATUT");
+                    // Ajoute ici toute logique de mise à jour de données si nécessaire (par exemple, mise à jour du statut)
+                    // Exemple : mise à jour du statut ou autre action
+                    $updateStatusSql = "UPDATE membre SET numStat = ? WHERE pseudoMemb = ?";
+                    $stmtUpdate = $DB->prepare($updateStatusSql);
+                    $newStatus = 2; // Exemple : Nouveau statut à appliquer
+                    $stmtUpdate->execute([$newStatus, $user['pseudoMemb']]);
 
-                    // Rediriger vers la page d'accueil ou autre
+                    // Rediriger vers la page d'accueil ou autre avec un message de succès
                     header("Location: http://localhost:8888?message=connexion_reussie");
                     exit;
                 } else {
@@ -50,6 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
 
 
 
