@@ -22,7 +22,7 @@ if ($connexion && $connexion[0]) {
     if (password_verify($password, $hashedPassword)) {
         echo"okk";
         $_SESSION['id'] = $connexion[0]['numMemb'];
-        header('Location: ../../index.php');
+        header('Location: /index.php');
         $_SESSION['pseudo'] = $connexion[0]['pseudoMemb'];
         $_SESSION['statut'] = $connexion[0]['numStat'];
         $_SESSION['flash']['danger'] = 'Vous êtes connecté';
