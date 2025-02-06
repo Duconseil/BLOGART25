@@ -8,7 +8,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 // Vérifier si l'utilisateur est connecté et si la session contient les informations nécessaires
 $pseudo =  $_SESSION['pseudo'] ?? null;
-$numStat = $_SESSION['numStat'] ?? null;  // Récupérer numStat ou null si non défini
+$numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non défini
 ?>
 
 <!DOCTYPE html>

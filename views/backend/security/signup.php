@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<p style='color:red;'>Ce pseudonyme est déjà pris. Veuillez en choisir un autre.</p>";
                         } else {
                             // Ajout de numStat avec une valeur par défaut (1 pour "membre")
-                            $sql = "INSERT INTO membre (pseudoMemb, passMemb, prenomMemb, nomMemb, eMailMemb, numStat, accordMemb) 
+                            $sql = "INSERT INTO MEMBRE (pseudoMemb, passMemb, prenomMemb, nomMemb, eMailMemb, numStat, accordMemb) 
                                     VALUES (:pseudoMemb, :passMemb, :prenomMemb, :nomMemb, :eMailMemb, :numStat, :accordMemb)";
                             $stmt = $DB->prepare($sql);
                             $stmt->execute([
@@ -88,6 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                                 'numStat' => 3 // Valeur par défaut pour "membre"
                             ]);
+
                             echo "<p style='color:green;'>Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.</p>";
                         }
                     } catch (PDOException $e) {
