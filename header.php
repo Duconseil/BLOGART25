@@ -54,10 +54,10 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/views/frontend/evenement.php?numArt=1">
-                    Acteurs</a>
+                    Événements</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/views/frontend/evenement.php?numArt=2">Événements</a>
+                    <a class="nav-link" href="/views/frontend/evenement.php?numArt=2">Acteurs</a>
                 </li>
                 <li class="nav-item">
                     <a id="open-menu" class="nav-link" href="#">Insolite</a>
