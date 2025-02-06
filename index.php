@@ -2,7 +2,12 @@
 require_once 'header.php';
 sql_connect();
 
-$allarticles = sql_select('ARTICLE', '*', "WHERE 1 ORDER BY id DESC LIMIT 4");
+$pdo = new PDO('mysql:host=localhost;dbname=your_database', 'username', 'password');
+$query = $pdo->query("SELECT * FROM ARTICLE LIMIT 4");
+$allarticles = $query->fetchAll(PDO::FETCH_ASSOC);
+
+print_r($allarticles); 
+
 //var_dump($allarticle);
 
 
