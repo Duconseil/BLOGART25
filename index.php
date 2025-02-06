@@ -2,7 +2,7 @@
 require_once 'header.php';
 sql_connect();
 
-$allarticles = sql_select('ARTICLE', '*', "WHERE numArt >= 1 AND numArt <= 4");
+$allarticles = sql_select('ARTICLE', '*', "numArt >= 1 AND numArt <= 4");
 //$allarticles = sql_select('ARTICLE', '*', where: "WHERE numArt BETWEEN 1 AND 4")
 
 //var_dump($allarticle);
