@@ -1,5 +1,5 @@
 <?php
-ob_start()
+ob_start();
 // Inclure le fichier de connexion ou initialisation de la base de données
 include '../../../header.php';
 
