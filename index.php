@@ -4,6 +4,7 @@ sql_connect();
 
 $allarticles = sql_select(table: 'ARTICLE', '*');
 
+
 //var_dump($allarticle);
 
 
