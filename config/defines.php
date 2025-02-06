@@ -12,7 +12,7 @@ if (!defined('SQL_HOST')) {
         define('SQL_USER', getenv('DB_USER'));
         define('SQL_PWD', getenv('DB_PASSWORD'));
         define('SQL_DB', getenv('DB_DATABASE'));     
-        define('SQL_PORT', 3306);  // Utiliser 3306 par défaut en local  
+        define('SQL_PORT', 3306);  // Valeur par défaut
     }
 }
 ?>

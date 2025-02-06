@@ -13,7 +13,7 @@ try {
     
 
 } catch (PDOException $e) {
-    
+
     die("Impossible de se connecter à la base de données: " . $e->getMessage);
 
 };
@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $passMembHashed = password_hash($passMemb, PASSWORD_BCRYPT);
 
                     try {
-                        $sql = "SELECT * FROM membre WHERE pseudoMemb = :pseudoMemb";
+                        $sql = "SELECT * FROM MEMBRE WHERE pseudoMemb = :pseudoMemb";
                         $stmt = $DB->prepare($sql);
                         $stmt->execute(['pseudoMemb' => $pseudoMemb]);
                         
