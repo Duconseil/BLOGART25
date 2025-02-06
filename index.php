@@ -2,7 +2,7 @@
 require_once 'header.php';
 sql_connect();
 
-$allarticles = sql_select('ARTICLE', '*', ['LIMIT' => 4]);
+$allarticles = sql_select('ARTICLE', '*', "WHERE 1 ORDER BY id DESC LIMIT 4");
 //var_dump($allarticle);
 
 
