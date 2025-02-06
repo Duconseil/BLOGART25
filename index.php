@@ -213,7 +213,7 @@ sql_connect();
             <div class="col-md-10 col-lg-8 col-xl-7">
                 <!-- Articles Classiques -->
                 <div class="post-preview">
-                    <a href="http://localhost/evenement.php">
+                    <a href="/views/frontend/evenement.php">
                         <img src="src/images/Photo1.jpg" alt="Article Image">
                         <h2 class="post-title">Michel CORAJOUD, l'artisan de vos balades à Bordeaux.</h2>
                     </a>
@@ -222,7 +222,7 @@ sql_connect();
                 </div>
                 <hr class="my-4" />
                 <div class="post-preview">
-                    <a href="http://localhost/acteur.php">
+                    <a href="/views/frontend/acteur.php">
                         <img src="src/images/Photo2.jpg" alt="Article Image">
                         <h2 class="post-title">Hélène et Lucien, l'Amour de Bordeaux.</h2>
                     </a>
