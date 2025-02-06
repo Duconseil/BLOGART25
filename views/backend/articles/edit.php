@@ -46,10 +46,10 @@ if(isset($_GET['numArt'])){
                     <input id="dtCreaArt" name="dtCreaArt" class="form-control" type="datetime-local" value="<?php echo date('Y-m-d\TH:i', strtotime($dtCreaArt)); ?>">
 
                     <label for="libChapoArt">Chapeau</label>
-                    <textarea id="libChapoArt" name="libChapoArt" class="form-control" maxlength="500" style="height: 200px;"><?php echo $libChapoArt; ?></textarea> 
+                    <textarea id="libChapoArt" name="libChapoArt" class="form-control" maxlength="500" style="height: 200px;"><?php echo $libChapoArt; ?></textarea> //
                     
                     <label for="libAccrochArt">Accroche paragraphe 1</label>
-                    <input id="libAccrochArt" name="libAccrochArt" class="form-control" type="text" value="<?php echo $libAccrochArt; ?>">
+                    <input id="libAccrochArt" name="libAccrochArt" class="form-control" type="text" maxlength="100" value="<?php echo $libAccrochArt; ?>">
                     
                     <label for="parag1Art">Paragraphe 1</label>
                     <textarea id="parag1Art" name="parag1Art" class="form-control" maxlength="1200" style="height: 200px;"><?php echo $parag1Art; ?></textarea>
