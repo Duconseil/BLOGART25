@@ -21,12 +21,12 @@ if ($connexion && $connexion[0]) {
     $hashedPassword = $membre[4];
 
     if (password_verify($password, $hashedPassword)) {
-        echo "okk";
+        //echo "okk";
         $_SESSION['id'] = $connexion[0]['numMemb'];
         $_SESSION['pseudo'] = $connexion[0]['pseudoMemb'];
         $_SESSION['statut'] = $connexion[0]['numStat'];
         $_SESSION['flash']['danger'] = 'Vous êtes connecté';
-        header('Location: /');
+        header('Location: /index.php');
         exit();
     } else {
         header('Location: ../../views/backend/security/login.php');
