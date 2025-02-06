@@ -1,5 +1,7 @@
 <?php
 include '../../../header.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+require_once '../../../functions/ctrlSaisies.php';
 // Vérifier si la session est déjà active avant d'appeler session_start()
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
