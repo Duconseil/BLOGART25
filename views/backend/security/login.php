@@ -11,9 +11,6 @@ if(!empty($_POST)) {
 }
 
 
-
-
-// Récupère l'utilisateur depuis la base de données
 $connexion = sql_select('MEMBRE', "*", "pseudoMemb = '$pseudo'");
 
 
@@ -24,7 +21,7 @@ if ($connexion && $connexion[0]) {
     $hashedPassword = $membre[4];
 
     if (password_verify($password, $hashedPassword)) {
-        echo"okk";
+        //echo"okk";
         $_SESSION['id'] = $connexion[0]['numMemb'];
         header('Location: /index.php');
         $_SESSION['pseudo'] = $connexion[0]['pseudoMemb'];
@@ -32,7 +29,7 @@ if ($connexion && $connexion[0]) {
         $_SESSION['flash']['danger'] = 'Vous êtes connecté';
     } else {
         header('Location: ../../views/backend/security/login.php');
-        
+
     }
 } else {
     //echo "L'utilisateur n'existe pas.";

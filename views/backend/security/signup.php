@@ -3,12 +3,6 @@ include '../../../header.php';
 
 $recaptchaSecret = '6Lej580qAAAAAJJoCPyuzSi5-Hs-lFr9ylkq_oMD'; 
 
-try {
-    $DB = new PDO('mysql:host=localhost;dbname=BLOGART25', 'root', 'root');
-    $DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Impossible de se connecter à la base de données: " . $e->getMessage());
-}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Vérification du reCAPTCHA
