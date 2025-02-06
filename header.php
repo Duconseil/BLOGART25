@@ -1,7 +1,6 @@
 <?php
 require_once 'config.php';
 
-
 // Vérifier si la session n'est pas déjà active avant de la démarrer
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
@@ -53,8 +52,7 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
                     <a class="nav-link active" aria-current="page" href="/">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/views/frontend/evenement.php?numArt=1">
-                    Événements</a>
+                    <a class="nav-link" href="/views/frontend/evenement.php?numArt=1">Acteurs</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/views/frontend/evenement.php?numArt=2">Acteurs</a>
@@ -62,27 +60,18 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
                 <li class="nav-item">
                     <a id="open-menu" class="nav-link" href="#">Insolite</a>
                 </li>
-                <div class="menu-open">
+            </ul>
+            
+            <!-- Sous-menu caché par défaut -->
+            <ul class="navbar-nav menu-open">
                 <li class="nav-item">
                     <a class="nav-link" href="/views/frontend/evenement.php?numArt=3">Insolite n°1</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/views/frontend/evenement.php?numArt=4">Insolite n°2</a>
                 </li>
-                </div>
-                
             </ul>
         </div>
-
-        <script>
-    const openMenu = document.getElementById('open-menu');
-    const menu = document.querySelector('.menu-open'); // Corrigé avec le point
-
-    openMenu.addEventListener('click', (event) => {
-        event.preventDefault(); // Empêche le lien de recharger la page
-        menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
-    });
-        </script>
 
         <!-- Zone de droite -->
         <div class="d-flex align-items-center">
@@ -117,35 +106,67 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
         integrity="sha384-ho+j7jyWK8fNQe+A12Kw1Wrh/tb6SVkzF6FA5Hq5j5jzgFgnxP/1R" 
         crossorigin="anonymous"></script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const openMenu = document.getElementById('open-menu');
+        const menu = document.querySelector('.menu-open');
+
+        // Cacher le menu au chargement de la page
+        menu.style.display = "none";
+
+        openMenu.addEventListener('click', (event) => {
+            event.preventDefault(); // Empêche le lien de recharger la page
+            if (menu.style.display === "none") {
+                menu.style.display = "flex";
+            } else {
+                menu.style.display = "none";
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
 
 <style>
     .navbar {
-    padding: 15px 30px;
-}
+        padding: 15px 30px;
+    }
 
-.navbar-nav .nav-item {
-    margin-right: 15px;
-}
+    .navbar-nav .nav-item {
+        margin-right: 15px;
+    }
 
-.navbar-brand img {
-    margin-right: 15px;
-}
+    .navbar-brand img {
+        margin-right: 15px;
+    }
 
-.d-flex.align-items-center {
-    gap: 15px;
-}
+    .d-flex.align-items-center {
+        gap: 15px;
+    }
 
-form.d-flex {
-    margin-right: 15px;
-}
+    form.d-flex {
+        margin-right: 15px;
+    }
 
-.navbar .btn {
-    padding: 8px 15px;
-}
+    .navbar .btn {
+        padding: 8px 15px;
+    }
 
-.navbar-toggler {
-    margin-left: 10px;
-}
+    .navbar-toggler {
+        margin-left: 10px;
+    }
+
+    /* Caché par défaut */
+    .menu-open {
+        display: none;
+        flex-direction: row; /* Affiche les éléments horizontalement */
+        gap: 15px; /* Espacement entre les éléments */
+        align-items: center; /* Aligner verticalement */
+        margin-left: 15px;
+    }
+
+    .menu-open .nav-item {
+        padding-left: 15px;
+    }
 </style>
