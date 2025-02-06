@@ -1,18 +1,19 @@
+
 <?php
+// Inclure le fichier de connexion ou initialisation de la base de données
 include '../../../header.php';
 
-// Vérifier si une session est déjà active
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+global $DB;
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Vérification des informations de connexion
     if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"])) {
         $pseudoMemb = trim($_POST["pseudoMemb"]);
         $passMemb = trim($_POST["mot_de_passe"]);
 
         try {
-            // Connexion à la base de données avec PDO
+             // Connexion à la base de données avec PDO
             global $DB;
 
             // Requête préparée pour récupérer l'utilisateur
@@ -21,23 +22,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute([$pseudoMemb]);
             $user = $stmt->fetch();
 
+
             if ($user) {
-                // Vérification du mot de passe
+                // Vérifier le mot de passe avec password_verify
                 if (password_verify($passMemb, $user['passMemb'])) {
-                    // Stocker les informations en session
+                    session_start();
                     $_SESSION['pseudoMemb'] = $user['pseudoMemb'];
                     $_SESSION['prenomMemb'] = $user['prenomMemb'];
                     $_SESSION['nomMemb'] = $user['nomMemb'];
-                    $_SESSION['numStat'] = $user['numStat']; // Le statut de l'utilisateur
+                    $_SESSION['numStat'] = $user['numStat'];  // Ajout du statut de l'utilisateur
 
-                    // Ajoute ici toute logique de mise à jour de données si nécessaire (par exemple, mise à jour du statut)
-                    // Exemple : mise à jour du statut ou autre action
-                    $updateStatusSql = "UPDATE membre SET numStat = ? WHERE pseudoMemb = ?";
-                    $stmtUpdate = $DB->prepare($updateStatusSql);
-                    $newStatus = 2; // Exemple : Nouveau statut à appliquer
-                    $stmtUpdate->execute([$newStatus, $user['pseudoMemb']]);
-
-                    // Rediriger vers la page d'accueil ou autre avec un message de succès
                     header("Location: http://localhost:8888?message=connexion_reussie");
                     exit;
                 } else {
@@ -54,11 +48,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -160,3 +149,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         background-color: #218838;
     }
 </style>
+
