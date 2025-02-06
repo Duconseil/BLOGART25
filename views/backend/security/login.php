@@ -7,6 +7,8 @@ global $DB;
 $password = $_POST["mot_de_passe"];
 $pseudo = $_POST["pseudoMemb"];
 
+
+
 // Récupère l'utilisateur depuis la base de données
 $connexion = sql_select('MEMBRE', "*", "pseudoMemb = '$pseudo'");
 
@@ -19,15 +21,12 @@ if ($connexion && $connexion[0]) {
 
     if (password_verify($password, $hashedPassword)) {
         echo"okk";
-        
         $_SESSION['id'] = $connexion[0]['numMemb'];
-        //header('Location: ../../index.php');
+        header('Location: ../../index.php');
         $_SESSION['pseudo'] = $connexion[0]['pseudoMemb'];
         $_SESSION['statut'] = $connexion[0]['numStat'];
         $_SESSION['flash']['danger'] = 'Vous êtes connecté';
     } else {
-        echo"non";
-
         header('Location: ../../views/backend/security/login.php');
 
     }
