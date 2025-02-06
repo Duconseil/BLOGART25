@@ -82,7 +82,7 @@ if (isset($_GET['numCom'])) {
                 <!-- Action buttons -->
                 <div class="form-group mt-3">
                     <a href="list.php" class="btn btn-primary">List</a>
-                    <button type="submit" class="btn btn-warning" style="color: white;">Confirmer contrôle ?</button>
+                    <button type="submit" class="btn btn-warning" style="color: white;">Confirmer Edit ?</button>
                 </div>
             </form>
             <br><br>
