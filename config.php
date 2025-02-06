@@ -13,9 +13,7 @@ if (strpos ($_SERVER['HTTP_HOST'], 'scalingo') == false) {
 require_once ROOT . '/config/defines.php';
 
 //debug
-if (getenv('APP_DEBUG') == 'true') {
     require_once ROOT . '/config/debug.php';
-}
 
 //load functions
 require_once ROOT . '/functions/global.inc.php';
