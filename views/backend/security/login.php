@@ -1,45 +1,42 @@
 <?php
 // Inclure le fichier de connexion ou initialisation de la base de données
-include '../../../header.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+require_once '../../../functions/ctrlSaisies.php';
 
-global $DB;
-
+$errorPseudo = $errorPassword = "";
+$pseudo = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Vérification des informations de connexion
-    if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"])) {
-        $pseudoMemb = trim($_POST["pseudoMemb"]);
-        $passMemb = trim($_POST["mot_de_passe"]);
+    $pseudo = ctrlSaisies($_POST['pseudo']);
+    $password = ctrlSaisies($_POST['password']);
 
-        try {
-            // Vérifier si le pseudo existe
-        $user = sql_select("MEMBRE", "*", "pseudoMemb");
+    if (empty($pseudo)) {
+        $errorPseudo = "Le pseudo est requis.";
+    }
 
-            if ($user) {
-                // Vérifier le mot de passe avec password_verify
-                if (password_verify($passMemb, $user['passMemb'])) {
-                    session_start();
-                    $_SESSION['pseudoMemb'] = $user['pseudoMemb'];
-                    $_SESSION['prenomMemb'] = $user['prenomMemb'];
-                    $_SESSION['nomMemb'] = $user['nomMemb'];
-                    $_SESSION['numStat'] = $user['numStat'];  // Ajout du statut de l'utilisateur
+    if (empty($password)) {
+        $errorPassword = "Le mot de passe est requis.";
+    }
 
-                    header("Location: http://localhost:8888?message=connexion_reussie");
-                    exit;
-                } else {
-                    echo "<p style='color:red;'>Mot de passe incorrect.</p>";
-                }
-            } else {
-                echo "<p style='color:red;'>Pseudo non trouvé.</p>";
-            }
-        } catch (PDOException $e) {
-            echo "<p style='color:red;'>Erreur de requête : " . $e->getMessage() . "</p>";
+    if (empty($errorPseudo) && empty($errorPassword)) {
+        // Vérifier si l'utilisateur existe
+        $user = sql_select("MEMBRE", "*", "pseudoMemb = '$pseudo'");
+
+        if ($user && password_verify($password, $user[0]['passMemb'])) {
+            // Connexion réussie
+            $_SESSION['user_id'] = $user[0]['numMemb'];
+            $_SESSION['pseudoMemb'] = $user[0]['pseudoMemb'];
+            $_SESSION['numStat'] = $user[0]['numStat']; // ✅ Stocker le statut
+
+            header("Location: " . ROOT_URL . "/index.php");
+            exit();
+        } else {
+            $errorPassword = "Pseudo ou mot de passe incorrect.";
         }
-    } else {
-        echo "<p style='color:red;'>Veuillez remplir tous les champs.</p>";
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
