@@ -1,13 +1,23 @@
 <?php
+// Inclure le fichier header où session_start() est appelé
 include '../../../header.php';
 require_once '../../../config.php'; // Assurez-vous que ce fichier est bien inclus
 
-// Vérifier si les constantes SQL sont définies
+// Vérifier si l'utilisateur est connecté
+if (!isset($_SESSION['pseudo'])) {
+    echo "<p>Vous devez être connecté pour accéder à cette page.</p>";
+    exit; // Arrête l'exécution de la page si l'utilisateur n'est pas connecté
+} else {
+    // Débogage pour voir si l'utilisateur est connecté et ce que contient la session
+    //echo "<p>Session active. ID utilisateur : " . $_SESSION['id'] . "</p>"; // Affiche l'ID utilisateur
+}
+
+// Vérification des constantes SQL
 if (!defined('SQL_HOST') || !defined('SQL_USER') || !defined('SQL_PWD') || !defined('SQL_DB')) {
     die("Erreur : Les constantes de connexion à la base de données ne sont pas définies dans config.php.");
 }
 
-// Création de la chaîne de connexion DSN pour PDO
+// Connexion à la base de données via PDO
 $dsn = "mysql:host=" . SQL_HOST . ";dbname=" . SQL_DB . ";charset=utf8";
 
 try {
@@ -51,6 +61,19 @@ if ($articleId > 0) {
         echo "<p>Erreur lors de la récupération des commentaires.</p>";
     }
 }
+
+// Récupérer les informations du membre connecté
+$numMemb = $_SESSION['id']; // L'ID du membre connecté
+try {
+    // Récupérer les informations du membre à partir de la base de données
+    $stmt = $pdo->prepare("SELECT pseudoMemb, prenomMemb, nomMemb FROM membre WHERE numMemb = :numMemb");
+    $stmt->bindParam(':numMemb', $numMemb, PDO::PARAM_INT);
+    $stmt->execute();
+    $tablemembre = $stmt->fetch();
+} catch (PDOException $e) {
+    echo "<p>Erreur lors de la récupération des informations du membre.</p>";
+}
+
 ?>
 
 <div class="container">
@@ -61,36 +84,33 @@ if ($articleId > 0) {
         <div class="col-md-12">
             <!-- Formulaire pour créer un commentaire -->
             <form action="<?php echo ROOT_URL . '/api/comments/create.php'; ?>" method="post">
-                <div class="form-group">
-                    <label for="pseudo">Pseudo</label>
-                    <input id="pseudo" name="pseudo" class="form-control" type="text" required />
-                </div>
-                <div class="form-group">
-                    <label for="prenom">Prénom</label>
-                    <input id="prenom" name="prenom" class="form-control" type="text" required />
-                </div>
-                <div class="form-group">
-                    <label for="nom">Nom</label>
-                    <input id="nom" name="nom" class="form-control" type="text" required />
-                </div>
-                <div class="form-group">
-                    <label for="numArt">Article</label>
-                    <select id="numArt" name="numArt" class="form-control" required>
-                        <option value="" disabled selected>- - - Choisissez l'article à commenter - - -</option>
-                        <?php 
-                        foreach ($articles as $article) {
-                            echo "<option value=\"{$article['numArt']}\">{$article['libTitrArt']}</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
+                <input id="numMemb" name="numMemb" class="form-control" style="display: none;" value="<?php echo $numMemb ?>" readonly="readonly" type="text" autofocus="autofocus" />
+                
+                <label for="pseudoMemb">Pseudo</label>
+                <input id="pseudoMemb" name="pseudoMemb" class="form-control" value="<?php echo htmlspecialchars($tablemembre['pseudoMemb']) ?>" readonly="readonly" type="text" />
+                
+                <label for="prenomMemb">Prénom</label>
+                <input id="prenomMemb" name="prenomMemb" class="form-control" value="<?php echo htmlspecialchars($tablemembre['prenomMemb']) ?>" readonly="readonly" type="text" />
+                
+                <label for="nomMemb">Nom</label>
+                <input id="nomMemb" name="nomMemb" class="form-control" value="<?php echo htmlspecialchars($tablemembre['nomMemb']) ?>" readonly="readonly" type="text" />
+                
+                <label class="h5" for="numArt">Liste des articles</label> <br>
+                <select id="numArt" name="numArt">
+                    <?php 
+                    foreach ($articles as $article) {
+                        echo "<option value='".$article['numArt']."'> ".$article['libTitrArt']."</option>";
+                    }
+                    ?>
+                </select> <br>
+                
                 <div class="form-group">
                     <label for="libCom">Commentaires</label>
                     <textarea id="libCom" name="libCom" class="form-control" rows="4" required></textarea>
                 </div>
                 <br />
                 <div class="form-group mt-2">
-                    <a href="list.php" class="btn btn-primary">List</a>
+                    <a href="list.php" class="btn btn-primary">Liste</a>
                     <button type="submit" class="btn btn-success">Confirmer la création</button>
                 </div>
             </form>
@@ -98,22 +118,4 @@ if ($articleId > 0) {
     </div>
 </div>
 
-<!-- Affichage des commentaires de l'article sélectionné -->
-<div class="container mt-4">
-    <h3>Commentaires de l'Article : <?php echo htmlspecialchars($articleTitle); ?></h3>
-    <div class="list-group">
-        <?php
-        if (count($comments) > 0) {
-            foreach ($comments as $comment) {
-                echo "<div class=\"list-group-item\">
-                        <strong>{$comment['pseudo']}</strong> (En cours de validation)<br>
-                        <span class=\"text-muted\">{$comment['dtCreCom']}</span><br>
-                        <p>{$comment['libCom']}</p>
-                        </div>";
-            }
-        } else {
-            echo "<p>Aucun commentaire en attente de validation pour cet article.</p>";
-        }
-        ?>
-    </div>
-</div>
+

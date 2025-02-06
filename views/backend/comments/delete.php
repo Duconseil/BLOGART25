@@ -51,7 +51,7 @@ if(isset($_GET['numCom'])){
                 </div>
                 <br />
                 <div class="form-group mt-2">
-                <div class="py-3 fw-bold h5"style="color: var(--bs-danger)"><strong>=> Suppression définitive du commentaire.</strong></div>
+                <div class="py-3 fw h5"style="color: var(--bs-danger)"><strong>Suppression définitive du commentaire.</strong></div>
                     <a href="list.php" class="btn btn-primary">List</a>
                     <button type="submit" class="btn btn-danger">Confirmer Delete ?</button>
                 </div>

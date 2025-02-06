@@ -19,14 +19,11 @@ $notifComKOAff = ctrlSaisies($notifComKOAff);
 $dellogiq = isset($dellogiq) ? ctrlSaisies($dellogiq) : 0;  // Default to 0 if not set
 $dtModCom = date("Y-m-d-H-i-s");
 
-// If 'dellogiq' should be an integer and it's empty or invalid, set it to 0
-if (empty($dellogiq) || !is_numeric($dellogiq)) {
-    $dellogiq = 0;  // Ensure it is an integer
-}
+
 
 // Update the comment in the database
 sql_update('comment', 
-    "libCom = '$libCom', attModOK='$attModOK', notifComKOAff='$notifComKOAff', dellogiq='$dellogiq', dtModCom='$dtModCom'", 
+    "libCom = '$libCom', attModOK='$attModOK', notifComKOAff='$notifComKOAff', dellogiq='$delLogiq', dtModCom='$dtModCom'", 
     "numCom = $numCom");
 
 // Redirect to the comments list page

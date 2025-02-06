@@ -3,7 +3,7 @@ include '../../../header.php'; // contains the header and call to config.php
 
 // Charger les commentaires depuis la base de données
 $comments = sql_select("comment", "*");
-$articles = sql_select("article", "*");
+$articles = sql_select("article", attributs: "*");
 $membres = sql_select("membre", "*");
 
 function getMembre($numMemb) {
@@ -15,9 +15,9 @@ function getArticle($numArt) {
 }
 
 // Filter comments by status
-$commentsAttente = array_filter($comments, fn($comment) => $comment['attModOK'] == 0 && $comment['delLogiq'] == 0);
-$commentsControle = array_filter($comments, fn($comment) => $comment['attModOK'] == 1 && $comment['delLogiq'] == 0);
-$commentsArchive = array_filter($comments, fn($comment) => $comment['delLogiq'] == 1);
+$commentsAttente = sql_select("comment", "*","dtModCom IS null");
+$commentsControle = sql_select("comment","*","dtModCom IS NOT null AND dellogiq=0");
+$commentsArchive = sql_select("comment","*","dtModCom IS NOT null AND dellogiq=1");
 ?>
 
 <div class="container">
