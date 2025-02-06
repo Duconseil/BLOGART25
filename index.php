@@ -1,8 +1,7 @@
 <?php 
 require_once 'header.php';
 sql_connect();
-
-$allarticles = sql_select(table: 'ARTICLE', '*');
+$allarticles = sql_select('ARTICLE', '*');
 
 
 //var_dump($allarticle);
