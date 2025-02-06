@@ -1,5 +1,6 @@
 <?php
-require_once 'config.php'; // Charger la configuration
+require_once 'config.php';
+
 
 // Vérifier si la session n'est pas déjà active avant de la démarrer
 if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -52,10 +53,10 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
                     <a class="nav-link active" aria-current="page" href="/">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/views/frontend/actors.php">Acteurs</a>
+                    <a class="nav-link" href="/views/frontend/acteur.php">Acteurs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/views/frontend/events.php">Événements</a>
+                    <a class="nav-link" href="/views/frontend/evenement.php">Événements</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/views/frontend/original.php">Insolite</a>
