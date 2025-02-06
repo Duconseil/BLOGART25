@@ -1,41 +1,53 @@
 <?php
-// Inclure le fichier de connexion ou initialisation de la base de données
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
-require_once '../../../functions/ctrlSaisies.php';
+// Inclure le fichier de connexion et les fonctions nécessaires
+include '../../../header.php';
 
-$errorPseudo = $errorPassword = "";
-$pseudo = "";
+// Vérifier si une session est déjà active
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $pseudo = ctrlSaisies($_POST['pseudo']);
-    $password = ctrlSaisies($_POST['password']);
+    // Vérification des champs du formulaire
+    if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"])) {
+        $pseudoMemb = trim($_POST["pseudoMemb"]);
+        $passMemb = trim($_POST["mot_de_passe"]);
 
-    if (empty($pseudo)) {
-        $errorPseudo = "Le pseudo est requis.";
-    }
+        try {
+            // Récupérer les informations du membre avec sql_select
+            $user = sql_select("membre", "*", "pseudoMemb = ?", [$pseudoMemb]);
 
-    if (empty($password)) {
-        $errorPassword = "Le mot de passe est requis.";
-    }
+            if ($user && count($user) > 0) {
+                $user = $user[0]; // Extraire le premier (et unique) résultat
 
-    if (empty($errorPseudo) && empty($errorPassword)) {
-        // Vérifier si l'utilisateur existe
-        $user = sql_select("MEMBRE", "*", "pseudoMemb = '$pseudo'");
+                // Vérifier le mot de passe
+                if (password_verify($passMemb, $user['passMemb'])) {
+                    // Stocker les infos en session
+                    $_SESSION['pseudoMemb'] = $user['pseudoMemb'];
+                    $_SESSION['prenomMemb'] = $user['prenomMemb'];
+                    $_SESSION['nomMemb'] = $user['nomMemb'];
+                    $_SESSION['numStat'] = $user['numStat']; 
 
-        if ($user && password_verify($password, $user[0]['passMemb'])) {
-            // Connexion réussie
-            $_SESSION['user_id'] = $user[0]['numMemb'];
-            $_SESSION['pseudoMemb'] = $user[0]['pseudoMemb'];
-            $_SESSION['numStat'] = $user[0]['numStat']; // ✅ Stocker le statut
+                    // Charger tous les statuts disponibles
+                    $statuts = sql_select("STATUT", "*");
 
-            header("Location: " . ROOT_URL . "/index.php");
-            exit();
-        } else {
-            $errorPassword = "Pseudo ou mot de passe incorrect.";
+                    header("Location: http://localhost:8888?message=connexion_reussie");
+                    exit;
+                } else {
+                    echo "<p style='color:red;'>Mot de passe incorrect.</p>";
+                }
+            } else {
+                echo "<p style='color:red;'>Pseudo non trouvé.</p>";
+            }
+        } catch (PDOException $e) {
+            echo "<p style='color:red;'>Erreur de requête : " . $e->getMessage() . "</p>";
         }
+    } else {
+        echo "<p style='color:red;'>Veuillez remplir tous les champs.</p>";
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>

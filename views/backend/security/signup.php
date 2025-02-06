@@ -1,80 +1,15 @@
 <?php
+session_start();
 include '../../../header.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
-require_once '../../../functions/ctrlSaisies.php';
-// Vérifier si la session est déjà active avant d'appeler session_start()
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
-$recaptchaSecret = '6Lej580qAAAAAJJoCPyuzSi5-Hs-lFr9ylkq_oMD';
+// Récupération des données de session
+$errors = $_SESSION['errors'] ?? [];
+$success = $_SESSION['success'] ?? null;
+$old = $_SESSION['old'] ?? [];
 
-try {
-    $DB = new PDO('mysql:host=localhost;dbname=BLOGART25', 'root', 'root');
-    $DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Impossible de se connecter à la base de données: " . $e->getMessage());
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Vérification que tous les champs sont bien remplis
-    if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"]) && !empty($_POST["mot_de_passe_confirm"]) &&
-        !empty($_POST["prenom"]) && !empty($_POST["nom"]) && !empty($_POST["eMailMemb"]) && !empty($_POST["eMailMemb_confirm"])) {
-
-        $pseudoMemb = trim(htmlspecialchars($_POST["pseudoMemb"]));
-        $passMemb = trim($_POST["mot_de_passe"]);
-        $passMembConfirm = trim($_POST["mot_de_passe_confirm"]);
-        $prenomMemb = trim(htmlspecialchars($_POST["prenom"]));
-        $nomMemb = trim(htmlspecialchars($_POST["nom"]));
-        $eMailMemb = trim(htmlspecialchars($_POST["eMailMemb"]));
-        $eMailMembConfirm = trim(htmlspecialchars($_POST["eMailMemb_confirm"]));
-        $accordMemb = isset($_POST['acceptedonnees']) ? 1 : 0; // Vérification de l'accord
-
-        // Vérification des mots de passe
-        if ($passMemb !== $passMembConfirm) {
-            echo "<p style='color:red;'>Les mots de passe ne correspondent pas.</p>";
-        } elseif (!filter_var($eMailMemb, FILTER_VALIDATE_EMAIL)) {
-            echo "<p style='color:red;'>Format d'email invalide.</p>";
-        } elseif ($eMailMemb !== $eMailMembConfirm) {
-            echo "<p style='color:red;'>Les emails ne correspondent pas.</p>";
-        } else {
-            $passMembHashed = password_hash($passMemb, PASSWORD_BCRYPT);
-
-            try {
-                // Vérification si le pseudo existe déjà
-                $sql = "SELECT numMemb FROM membre WHERE pseudoMemb = :pseudoMemb";
-                $stmt = $DB->prepare($sql);
-                $stmt->execute(['pseudoMemb' => $pseudoMemb]);
-
-                if ($stmt->fetch()) {
-                    echo "<p style='color:red;'>Ce pseudonyme est déjà pris. Veuillez en choisir un autre.</p>";
-                } else {
-                    // Insertion du membre
-                    $sql = "INSERT INTO membre (pseudoMemb, passMemb, prenomMemb, nomMemb, eMailMemb, numStat, accordMemb) 
-                            VALUES (:pseudoMemb, :passMemb, :prenomMemb, :nomMemb, :eMailMemb, :numStat, :accordMemb)";
-                    $stmt = $DB->prepare($sql);
-                    $stmt->execute([
-                        'pseudoMemb' => $pseudoMemb,
-                        'passMemb' => $passMembHashed,
-                        'prenomMemb' => $prenomMemb,
-                        'nomMemb' => $nomMemb,
-                        'eMailMemb' => $eMailMemb,
-                        'numStat' => 3, // Valeur par défaut pour un membre
-                        'accordMemb' => $accordMemb
-                    ]);
-
-                    echo "<p style='color:green;'>Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.</p>";
-                }
-            } catch (PDOException $e) {
-                echo "<p style='color:red;'>Erreur de requête : " . $e->getMessage() . "</p>";
-            }
-        }
-    } else {
-        echo "<p style='color:red;'>Veuillez remplir tous les champs.</p>";
-    }
-}
+// Nettoyage des données de session après récupération
+unset($_SESSION['errors'], $_SESSION['success'], $_SESSION['old']);
 ?>
-
 
 
 <!DOCTYPE html>
@@ -140,16 +75,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label for="validnon">Je refuse</label><br> <br>
             </div>
 
-            <!-- reCAPTCHA -->
-            <!--
-            <div class="form-group recaptcha-container">
-                <div class="g-recaptcha" 
-                        data-sitekey="6Lej580qAAAAAA0kk8ZyqeYBfdvf672_e7j_gamY" 
-                        data-callback="onSubmit" 
-                        data-action="submit">
-                </div>
-            </div>
-            -->
 
             <div class="form-group">
                 <button type="submit">S'inscrire</button>
@@ -227,4 +152,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         margin: 0 auto;
     }
 </style>
-
