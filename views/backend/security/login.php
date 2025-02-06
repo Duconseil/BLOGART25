@@ -27,6 +27,7 @@ if ($connexion && $connexion[0]) {
         $_SESSION['pseudo'] = $connexion[0]['pseudoMemb'];
         $_SESSION['statut'] = $connexion[0]['numStat'];
         $_SESSION['flash']['danger'] = 'Vous êtes connecté';
+        header('Location: /index.php');
     } else {
         header('Location: ../../views/backend/security/login.php');
 
