@@ -3,6 +3,20 @@ include '../../../header.php';
 
 $recaptchaSecret = '6Lej580qAAAAAJJoCPyuzSi5-Hs-lFr9ylkq_oMD'; 
 
+include '../../../config/defines.php';
+
+try {
+    $dsn = "mysql:host=" . SQL_HOST . ";dbname=" . SQL_DB . ";port=" . (SQL_PORT ?? 3306);  // Utilisation du port, avec une valeur par défaut si non définie
+    
+    $DB = new PDO($dsn, SQL_USER, SQL_PWD);
+    $DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+
+} catch (PDOException $e) {
+    
+    die("Impossible de se connecter à la base de données: " . $e->getMessage);
+
+};
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Vérification du reCAPTCHA
