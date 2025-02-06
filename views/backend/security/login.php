@@ -1,4 +1,5 @@
 <?php
+ob_start()
 // Inclure le fichier de connexion ou initialisation de la base de données
 include '../../../header.php';
 
@@ -138,3 +139,8 @@ if ($connexion && $connexion[0]) {
         background-color: #218838;
     }
 </style>
+<?php
+
+ob_end_flush();
+
+?>

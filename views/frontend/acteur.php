@@ -146,8 +146,8 @@ sql_connect();
 
         .logo-overlay {
             position: absolute;
-            top: 15px;
-            right: 170px;
+            top: 20px;
+            right: 275px;
             width: 70px; /* Taille ajustable */
             height: auto;
             opacity: 0.9; /* Légère transparence */
