@@ -14,23 +14,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $passMemb = trim($_POST["mot_de_passe"]);
 
         try {
-            // Récupérer les informations du membre avec sql_select
-            $user = sql_select("membre", "*", "pseudoMemb = ?", [$pseudoMemb]);
+            // Utilisation d'une requête préparée pour récupérer les informations de l'utilisateur
+            // La fonction sql_select devrait exécuter la requête correctement
+            $sql = "SELECT * FROM membre WHERE pseudoMemb = ?";
+            $user = sql_select($sql, [$pseudoMemb]);
 
             if ($user && count($user) > 0) {
                 $user = $user[0]; // Extraire le premier (et unique) résultat
 
-                // Vérifier le mot de passe
+                // Vérification du mot de passe
                 if (password_verify($passMemb, $user['passMemb'])) {
                     // Stocker les infos en session
                     $_SESSION['pseudoMemb'] = $user['pseudoMemb'];
                     $_SESSION['prenomMemb'] = $user['prenomMemb'];
                     $_SESSION['nomMemb'] = $user['nomMemb'];
-                    $_SESSION['numStat'] = $user['numStat']; 
+                    $_SESSION['numStat'] = $user['numStat']; // Le statut de l'utilisateur
 
                     // Charger tous les statuts disponibles
-                    $statuts = sql_select("STATUT", "*");
+                    $statuts = sql_select("SELECT * FROM STATUT");
 
+                    // Rediriger vers la page d'accueil ou autre
                     header("Location: http://localhost:8888?message=connexion_reussie");
                     exit;
                 } else {
@@ -47,6 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
 
 
 
