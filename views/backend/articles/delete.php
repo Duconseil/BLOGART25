@@ -1,4 +1,5 @@
 <?php
+ob_start();
 
 include '../../../header.php';
 
@@ -30,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canDelete) {
             if (!empty($imagePath) && file_exists("../../../src/uploads/$imagePath")) {
                 unlink("../../../src/uploads/$imagePath");
             }
-            header("Location: list.php?message=Article supprimé avec succès");
+            header(header: "Location: list.php?message=Article supprimé avec succès");
             exit;
         } else {
             $errorMessage = "Erreur lors de la suppression de l'article.";
@@ -94,5 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canDelete) {
 </div>
 
 <?php
+ob_end_flush();
+
 include '../../../footer.php';
 ?>
