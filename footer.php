@@ -30,6 +30,12 @@
                                 </a>
                             </li>
                         </ul>
+                        <div class="small text-center text-muted fst-italic" style="white-space: nowrap;">
+                            <a href="/views/frontend/rgpd/cgu.php" style="text-decoration: underline; display: inline-block; margin-right: 10px;">Conditions générales d'utilisation</a>
+                            <span style="margin: 0 10px;">•</span>
+                            <a href="/views/frontend/rgpd/rgpd.php" style="text-decoration: underline; display: inline-block;">RGPD</a>
+                        </div>
+
                         <div class="small text-center text-muted fst-italic">Copyright &copy; Retroscope 2025</div>
                     </div>
                 </div>
