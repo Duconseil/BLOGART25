@@ -1,82 +1,37 @@
 <?php
 include '../../../header.php';
-
-$members = [];
-$allArticles = [];
-
-$members = sql_select("MEMBRE", "numMemb, pseudoMemb", "1");
-
-$allArticles = sql_select("ARTICLE", "numArt, libTitrArt", "1");
-
-if (isset($_POST['numMemb']) && !empty($_POST['numMemb'])) {
-    $numMemb = $_POST['numMemb'];
-
-    $likedArticles = sql_select("likeart", "numArt", "numMemb = $numMemb");
-
-    $likedArticleIds = array_map(function($article) {
-        return $article['numArt'];
-    }, $likedArticles);
-
-    if (!empty($likedArticleIds)) {
-        $allArticles = sql_select("ARTICLE", "numArt, libTitrArt", 
-            "numArt NOT IN (" . implode(",", $likedArticleIds) . ")");
-    }
-}
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['numMemb']) && isset($_POST['numArt'])) {
-    $numMemb = $_POST['numMemb'];
-    $numArt = $_POST['numArt'];
-
-    $insertResult = sql_insert("likeart", [
-        'numMemb' => $numMemb,
-        'numArt' => $numArt
-    ]);
-
-    if ($insertResult) {
-        header("Location: list.php");
-        exit();
-    } else {
-        echo "<div class='alert alert-danger'>Erreur lors de l'ajout du like.</div>";
-    }
-}
 ?>
 
+<!-- Bootstrap form to create a new like -->
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1>Création d'un nouveau like</h1>
+            <h1>Création Nouveau Like</h1>
         </div>
         <div class="col-md-12">
-            <form action="create.php" method="post">
+            <!-- Form to create a new like -->
+            <form action="<?php echo ROOT_URL . '/api/likes/create.php' ?>" method="post">
                 <div class="form-group">
-                    <label for="numMemb">Membre</label>
-                    <select id="numMemb" name="numMemb" class="form-control" required>
-                        <option value="">- - - Choisissez un membre - - -</option>
-                        <?php foreach ($members as $member): ?>
-                            <option value="<?php echo $member['numMemb']; ?>"><?php echo $member['pseudoMemb']; ?></option>
-                        <?php endforeach; ?>
+                    <label for="numArt">Article</label>
+                    <input id="numArt" name="numArt" class="form-control" type="text" required />
+                </div>
+                <div class="form-group">
+                    <label for="numMemb">Numéro d'utilisateur</label>
+                    <input id="numMemb" name="numMemb" class="form-control" type="text" required />
+                </div>
+                <div class="form-group">
+                    <label for="likeA">Like</label>
+                    <select id="likeA" name="likeA" class="form-control" required>
+                        <option value="1">Like</option>
+                        <option value="0">Dislike</option>
                     </select>
                 </div>
-
-                <div class="form-group">
-                    <label for="numArt">Article à liker</label>
-                    <select id="numArt" name="numArt" class="form-control" required>
-                        <option value="">- - - Choisissez un article - - -</option>
-                        <?php foreach ($allArticles as $article): ?>
-                            <option value="<?php echo $article['numArt']; ?>"><?php echo $article['libTitrArt']; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
+                <br />
                 <div class="form-group mt-2">
-                    <a href="list.php" class="btn btn-primary">Liste des Likes</a>
-                    <button type="submit" class="btn btn-success">Confirmer la création</button>
+                    <a href="list.php" class="btn btn-primary">List</a>
+                    <button type="submit" class="btn btn-success">Confirmer Create</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-<?php
-include '../../../footer.php';
-?>

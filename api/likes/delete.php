@@ -1,8 +1,14 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+require_once '../../functions/ctrlSaisies.php';
 
-$numLike = addslashes($_POST['numLike']);
+$numMemb = ctrlSaisies($_POST['numMemb']);
+$numArt = ctrlSaisies($_POST['numArt']);
 
-sql_delete('LIKEART', "numLike = $numLike");
+// Suppression du like dans la base de données
+sql_delete('LIKEART', "numMemb = $numMemb AND numArt = $numArt");
 
+// Redirection vers la liste des likes après suppression
 header('Location: ../../views/backend/likes/list.php');
+exit();
+?>

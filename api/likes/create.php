@@ -1,38 +1,30 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+require_once '../../functions/ctrlSaisies.php';
 
-echo "<pre>";
-print_r($_POST); 
-echo "</pre>";
+// Nettoyer les données envoyées par le formulaire
+$numMemb = ctrlSaisies($_POST['numMemb']);
+$numArt = ctrlSaisies($_POST['numArt']);
+$likeA = ctrlSaisies($_POST['likeA']);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['libLikes']) && !empty(trim($_POST['libLikes']))) {
-        $numMemb = addslashes(trim($_POST['numMemb']));
-        $numArt = addslashes(trim($_POST['numArt']));
-        $libLikes = addslashes(trim($_POST['libLikes']));
-
-        echo "<pre>";
-        echo "numMemb: $numMemb\n";
-        echo "numArt: $numArt\n";
-        echo "libLikes: $libLikes\n";
-        echo "</pre>";
-
-        $result = sql_insert('LIKEART', 'numMemb, numArt, libLikes', "'$numMemb', '$numArt', '$libLikes'");
-
-        if ($result) {
-            echo "L'insertion a réussi!";
-            header('Location: ../../views/backend/likes/list.php');
-            exit;
-        } else {
-            echo "Erreur : L'insertion dans la base de données a échoué.";
-            exit;
-        }
-    } else {
-        echo "Erreur : Le champ 'libLikes' est manquant ou vide. Assurez-vous d'avoir rempli ce champ dans le formulaire.";
-        exit;
-    }
-} else {
-    echo "Erreur : Le formulaire n'a pas été soumis correctement.";
-    exit;
+// Vérification que 'likeA' est un entier valide (0 ou 1)
+if ($likeA !== "1" && $likeA !== "0") {
+    die("Erreur : 'likeA' doit être 1 ou 0.");
 }
+$likeA = (int)$likeA;  // Convertir 'likeA' en entier (0 ou 1)
+
+// Vérification si le like existe déjà dans la base de données
+$existingLike = sql_select('LIKEART', '*', "numMemb = $numMemb AND numArt = $numArt");
+
+if ($existingLike) {
+    // Si le like existe déjà, on le met à jour
+    sql_update('LIKEART', "likeA = $likeA", "numMemb = $numMemb AND numArt = $numArt");
+} else {
+    // Si le like n'existe pas, on l'insère
+    sql_insert('LIKEART', 'numMemb, numArt, likeA', "$numMemb, $numArt, $likeA");
+}
+
+// Redirection après l'insertion ou la mise à jour
+header('Location: ../../views/backend/likes/list.php');
+exit();
 ?>

@@ -1,22 +1,12 @@
 <?php
 include '../../../header.php';
 
-if (isset($_GET['numMemb'])) {
+if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
     $numMemb = $_GET['numMemb'];
-    $likeInfo = sql_select("likeart", "*", "numMemb = $numMemb");
-    
-    if (!empty($likeInfo)) {
-        $numArt = $likeInfo[0]['numArt'];
-        $numMemb = $likeInfo[0]['numMemb'];
-
-        $membreInfo = sql_select("MEMBRE", "pseudoMemb", "numMemb = $numMemb");
-        $membreNom = $membreInfo[0]['pseudoMemb'];
-
-        $articleInfo = sql_select("ARTICLE", "libTitrArt", "numArt = $numArt");
-        $articleTitre = $articleInfo[0]['libTitrArt'];
-    }
+    $numArt = $_GET['numArt'];
+    $likeA = sql_select("LIKEART", "likeA", "numMemb = $numMemb AND numArt = $numArt")[0]['likeA'];
 }
-?>
+?> 
 
 <div class="container">
     <div class="row">
@@ -24,36 +14,36 @@ if (isset($_GET['numMemb'])) {
             <h1>Modification Like</h1>
         </div>
         <div class="col-md-12">
-            <form action="<?php echo ROOT_URL . '/api/likes/create.php' ?>" method="post">
+            <!-- Form to edit like -->
+            <form action="<?php echo ROOT_URL . '/api/likes/update.php' ?>" method="post">
                 <div class="form-group">
-                    <label for="numMemb">Membre</label>
-                    <input id="numMemb" name="numMemb" class="form-control" style="display: none" type="text" value="<?php echo ($numMemb); ?>" readonly="readonly" />
-                    <input id="numMembDisplay" class="form-control" type="text" value="<?php echo $membreNom . ' (' . $numMemb . ')'; ?>" readonly="readonly"/>
+                    <label for="numArt">Numéro d'article</label>
+                    <input id="numArt" name="numArt" class="form-control" style="display: none" type="text" value="<?php echo $numArt; ?>" />
+                    <input id="numArt" name="numArt" class="form-control" type="text" value="<?php echo $numArt; ?>"  />
                 </div>
-                
-                <div class="form-group">
-                    <label for="numArt">Article</label>
-                    <input id="numArt" name="numArt" class="form-control" type="text" value="<?php echo $articleTitre; ?>" readonly="readonly"/>
-                </div>
+                <br>
 
                 <div class="form-group">
-                    <label for="numMemb">Article (un)Liké ?</label>
-                    <select id="numMemb" name="numMemb" class="form-control">
-                        <option value="1" <?php echo ($numMemb == 1) ? 'selected' : ''; ?>>Like</option>
-                        <option value="0" <?php echo ($numMemb == 0) ? 'selected' : ''; ?>>Unlike</option>
+                    <label for="numMemb">Numéro Membre</label>
+                    <input id="numMemb" name="numMemb" class="form-control" style="display: none" type="text" value="<?php echo $numMemb; ?>"  />
+                    <input id="numMemb" name="numMemb" class="form-control" type="text" value="<?php echo $numMemb; ?>"  />
+                </div>
+                <br>
+
+                <div class="form-group">
+                    <label for="likeA">Like/Dislike</label>
+                    <select id="likeA" name="likeA" class="form-control">
+                        <option value="1" <?php echo ($likeA == 1 ? 'selected' : ''); ?>>Like</option>
+                        <option value="0" <?php echo ($likeA == 0 ? 'selected' : ''); ?>>Dislike</option>
                     </select>
                 </div>
-                
-                <br />
+                <br>
+
                 <div class="form-group mt-2">
-                    <a href="list.php" class="btn btn-primary">List</a>
-                    <button type="submit" class="btn btn-danger">Confirmer changements ?</button>
+                    <a href="list.php" class="btn btn-primary">Retour à la liste</a>
+                    <button type="submit" class="btn btn-danger">Confirmer la modification ?</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-<?php
-include '../../../footer.php';
-?>
