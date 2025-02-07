@@ -45,7 +45,7 @@ $numStat = $_SESSION['statut'] ?? null;
                     <a class="nav-link active" aria-current="page" href="/">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/views/frontend/evenement.php?numArt=1">Acteurs</a>
+                    <a class="nav-link" href="/views/frontend/evenement.php?numArt=1">Evenements</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/views/frontend/evenement.php?numArt=2">Acteurs</a>
