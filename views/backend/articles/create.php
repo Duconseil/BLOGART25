@@ -10,7 +10,6 @@ $thematiques = sql_select('THEMATIQUE', '*');
             <h1>Création nouveau Article</h1>
         </div>
         <div class="col-md-12">
-            <!-- Form to create a new article -->
             <form action="<?php echo ROOT_URL . '/api/articles/create.php' ?>" method="post" id="form" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="libStat">Titre</label>
@@ -44,13 +43,11 @@ $thematiques = sql_select('THEMATIQUE', '*');
                     <textarea id="Conclusion" name="libConclArt" class="form-control" placeholder="Décrivez la conclusion. Sur 800 car." maxlength="500" style="height: 200px;"></textarea>
                     <br>
 
-                    <!-- Image upload input -->
                     <label for="urlPhotArt">Choisir une image :</label>
                     <input type="file" id="urlPhotArt" name="urlPhotArt" accept=".jpg, .jpeg, .png, .gif" class="form-control" maxlength="80000" size="200000000000">
                     <p>>> Extension des images acceptées : .jpg, .gif, .png, .jpeg (largeur, hauteur, taille max : 80000px, 80000px, 200 Mo)</p>
                     <br>
 
-                    <!-- Thématique selection -->
                     <div class="form-group">
                         <label for="numThem">Thématique</label>    
                         <select class="form-select" name="numThem">
@@ -63,7 +60,6 @@ $thematiques = sql_select('THEMATIQUE', '*');
                     </div>
                     <br>
 
-                    <!-- Choix des mots-clés -->
                     <div class="form-group">
                         <label>Choisissez les mots-clés liés à l'article :</label>
                         <div class="row">

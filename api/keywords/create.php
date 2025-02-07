@@ -4,7 +4,6 @@ require_once '../../functions/ctrlSaisies.php';
 
 $libMotCle = ctrlSaisies($_POST['libMotCle']);
 
-// Vérification si le champ est vide
 if (empty($libMotCle)) {
     header('Location: ../../views/backend/keywords/create.php?error=empty');
     exit;

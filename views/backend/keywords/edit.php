@@ -3,7 +3,6 @@ include '../../../header.php';
 
 if (isset($_GET['numMotCle'])) {
     $numMotCle = $_GET['numMotCle'];
-    // Fetch the keyword details from the database
     $motcle = sql_select("MOTCLE", "*", "numMotCle = $numMotCle")[0];
     $libMotCle = $motcle['libMotCle'];
 } else {
@@ -18,7 +17,6 @@ if (isset($_GET['numMotCle'])) {
             <h1>Modification Mot clé</h1>
         </div>
         <div class="col-md-12">
-            <!-- Form to update a keyword -->
             <form action="<?php echo ROOT_URL . '/api/keywords/update.php'; ?>" method="POST">
                 <div class="form-group">
                     <label for="libMotCle">Libellé</label>

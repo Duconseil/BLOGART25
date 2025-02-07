@@ -1,5 +1,4 @@
 <?php
-// Inclusion du header
 require_once '../../../header.php'; 
 ?>
 
@@ -10,7 +9,6 @@ require_once '../../../header.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Politique de Confidentialité - Rétroscope</title>
     <style>
-        /* Style général */
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
@@ -139,7 +137,6 @@ require_once '../../../header.php';
 </section>';
 
 <?php
-// Inclusion du footer
 require_once '../../../footer.php';
 
 ?>

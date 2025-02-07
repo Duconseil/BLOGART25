@@ -5,7 +5,6 @@ if (isset($_GET['numThem'])) {
     $numThem = $_GET['numThem'];
     $result = sql_select("THEMATIQUE", "libThem", "numThem = $numThem");
 
-    // Décoder l'encodage HTML stocké en base pour éviter les affichages incorrects
     $libThem = !empty($result) ? html_entity_decode($result[0]['libThem'], ENT_QUOTES, 'UTF-8') : '';
 } else {
     $numThem = '';

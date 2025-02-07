@@ -7,7 +7,6 @@ include '../../header.php';
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
     
-    // Vérification des champs
     $pseudoMemb = isset($_POST['pseudoMemb']) ? ctrlSaisies($_POST['pseudoMemb']) : null;
     $prenomMemb = isset($_POST['prenomMemb']) ? ctrlSaisies($_POST['prenomMemb']) : null;
     $nomMemb = isset($_POST['nomMemb']) ? ctrlSaisies($_POST['nomMemb']) : null;
@@ -20,7 +19,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $errors = [];
 
-    // Vérification Pseudo
     if (strlen($pseudoMemb) < 6 || strlen($pseudoMemb) > 70) {
         $errors[] = "Erreur, le pseudo doit contenir entre 6 et 70 caractères.";
     } else {
@@ -33,7 +31,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (!$numStat) {
         echo "dgegfhbfhbeh" ; 
     }
-    // Vérification mot de passe
     if (!preg_match('/[A-Z]/', $passMemb) || !preg_match('/[a-z]/', $passMemb) || !preg_match('/[0-9]/', $passMemb)) {
         $errors[] = "Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre.";
         $passMemb = null;
@@ -49,7 +46,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $hash_password = password_hash($passMemb, PASSWORD_DEFAULT);
     }
 
-    // Vérification Email
     if (!filter_var($eMailMemb, FILTER_VALIDATE_EMAIL)) {
         $errors[] = "$eMailMemb n'est pas une adresse mail valide.";
     }
@@ -59,7 +55,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $eMailMemb = null;
     }
 
-    // Vérification Accord
     if ($accordMemb !== 'OUI') {
         $errors[] = "Veuillez accepter de partager vos données.";
     }
@@ -71,7 +66,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
 
-    // Vérification complète avant insertion
     if (empty($errors) && isset($pseudoMemb, $prenomMemb, $nomMemb, $hash_password, $eMailMemb, $numStat)) {
         $dtCreaMemb = date('Y-m-d H:i:s');
         sql_insert(

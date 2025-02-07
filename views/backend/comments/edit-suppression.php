@@ -19,7 +19,6 @@ if(isset($_GET['numCom'])){
 }
 ?>
 
-<!-- Bootstrap form to create a new statut -->
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -27,7 +26,6 @@ if(isset($_GET['numCom'])){
             <br>
         </div>
         <div class="col-md-12">
-            <!-- Form to create a new statut -->
             <form action="<?php echo ROOT_URL . '/api/comments/update.php' ?>" method="post">
 
                 <div class="form-group">

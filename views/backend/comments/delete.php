@@ -10,14 +10,12 @@ if(isset($_GET['numCom'])){
 }
 ?>
 
-<!-- Bootstrap form to create a new comment -->
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <h1>Modération commentaire : suppression physique</h1>
         </div>
         <div class="col-md-12">
-            <!-- Form to create a new comment -->
             <form action="<?php echo ROOT_URL . '/api/comments/delete.php' ?>" method="post">
                 <div class="form-group">
                     <label for="numArt">Numéro de l'article</label>

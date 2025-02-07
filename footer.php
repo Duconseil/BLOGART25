@@ -1,4 +1,3 @@
-<!-- Load JS scripts -->
 </body>
 <footer class="border-top">
             <div class="container px-4 px-lg-5">
@@ -41,5 +40,4 @@
                 </div>
             </div>
         </footer>
-	<!-- footer -->
 </html>

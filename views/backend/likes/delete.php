@@ -6,26 +6,20 @@ if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
     $numArt = $_GET['numArt'];
     $likeInfo = sql_select("likeart", "*", "numMemb = $numMemb AND numArt = $numArt");
     
-    // Récupérer les informations de l'article lié à ce like
     if (!empty($likeInfo)) {
         $numMemb = $likeInfo[0]['numMemb'];
         $numArt = $likeInfo[0]['numArt'];
 
-        // Récupérer le nom du membre
         $membreInfo = sql_select("MEMBRE", "pseudoMemb", "numMemb = $numMemb");
         $membreNom = $membreInfo[0]['pseudoMemb'];
 
-        // Récupérer le titre de l'article
         $articleInfo = sql_select("ARTICLE", "libTitrArt", "numArt = $numArt");
         $articleTitre = $articleInfo[0]['libTitrArt'];
     }
 
-    // Suppression du like si le bouton est cliqué
     if (isset($_POST['delete'])) {
-        // Supprimer l'enregistrement de la table "likeart"
         sql_delete("likeart", "numMemb = $numMemb AND numArt = $numArt");
 
-        // Rediriger vers la liste après suppression
         header("Location: list.php");
         exit();
     }

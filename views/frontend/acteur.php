@@ -229,14 +229,12 @@ sql_connect();
         </div>
     </article>
 
-    <!-- Pied de page -->
     <footer class="border-top">
         <div class="container text-center">
             <p class="small text-muted">Copyright &copy; Rétroscope. 2025</p>
         </div>
     </footer>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/scripts.js"></script>
 </body>

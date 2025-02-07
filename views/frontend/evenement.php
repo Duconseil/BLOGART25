@@ -20,17 +20,14 @@ $articlecible = sql_select('ARTICLE', '*', "numArt = $numArt")[0];
     <meta name="description" content="Article sur Michel Corajoud">
     <title>Michel Corajoud - Rétroscope</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
-    <!-- Font Awesome & Google Fonts -->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css?family=Lora:400,700|Open+Sans:300,400,600,700,800" rel="stylesheet">
-    <!-- Bootstrap & Styles -->
     <link href="/blogart25/styles.css" rel="stylesheet">
 
 </head>
 
 <body>
 
-    <!-- En-tête de l'article avec image -->
     <header class="masthead">
         <div class="container">
             <div class="article-header">
@@ -51,7 +48,6 @@ $articlecible = sql_select('ARTICLE', '*', "numArt = $numArt")[0];
         </div>
     </header>
 
-    <!-- Contenu de l'article -->
     <article class="container">
 
     <div class="image-wrapper">
@@ -82,14 +78,12 @@ $articlecible = sql_select('ARTICLE', '*', "numArt = $numArt")[0];
         </div>
     </article>
 
-    <!-- Pied de page -->
     <footer class="border-top">
         <div class="container text-center">
             <p class="small text-muted">Copyright &copy; Rétroscope. 2025</p>
         </div>
     </footer>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/scripts.js"></script>
 </body>
@@ -97,7 +91,6 @@ $articlecible = sql_select('ARTICLE', '*', "numArt = $numArt")[0];
 
 <style>
 
-/* Espacement et mise en page améliorés */
 .article-header {
     margin-top: 20px;
     text-align: center;
@@ -158,7 +151,6 @@ $articlecible = sql_select('ARTICLE', '*', "numArt = $numArt")[0];
     color: #555;
 }
 
-        /* Titre principal - Élégant et impactant */
 .article-header h1 {
     font-family: 'Open Sans', serif;
     font-size: 2.2rem;
@@ -167,9 +159,8 @@ $articlecible = sql_select('ARTICLE', '*', "numArt = $numArt")[0];
     margin-bottom: 20px;
 }
 
-/* Harmonisation du Chapô */
 .article-chapo {
-    font-family: 'Open Sans', sans-serif; /* Uniformisation avec le contenu */
+    font-family: 'Open Sans', sans-serif; 
     font-size: 1.2rem;
     font-weight: 400;
     line-height: 1.6;
@@ -178,16 +169,14 @@ $articlecible = sql_select('ARTICLE', '*', "numArt = $numArt")[0];
     text-align: justify;
 }
 
-/* Sous-titre du Chapô - Plus moderne */
 .article-chapo h2 {
-    font-family: 'Open Sans', sans-serif; /* Cohérent avec l'article */
+    font-family: 'Open Sans', sans-serif; 
     font-size: 1.4rem;
-    font-weight: 600; /* Semi-gras pour une meilleure visibilité */
+    font-weight: 600; 
     letter-spacing: 0.5px;
     margin-bottom: 15px;
 }
 
-/* Petit sous-titre du Chapô - Italique et adouci */
 .article-chapo h3 {
     font-family: 'Open Sans', sans-serif;
     font-size: 1.2rem;
@@ -197,7 +186,6 @@ $articlecible = sql_select('ARTICLE', '*', "numArt = $numArt")[0];
     margin-bottom: 30px;
 }
 
-/* Métadonnées - Cohérence visuelle */
 .meta {
     font-family: 'Open Sans', sans-serif;
     font-size: 0.9rem;
@@ -209,14 +197,14 @@ $articlecible = sql_select('ARTICLE', '*', "numArt = $numArt")[0];
 .image-wrapper {
     position: relative;
     display: flex;
-    justify-content: center; /* Centre l'image horizontalement */
+    justify-content: center; 
     align-items: center;
     width: 100%;
 }
 
 .article-image {
     width: 100%;
-    max-width: 800px; /* Garde une taille raisonnable */
+    max-width: 800px; 
     height: auto;
     display: block;
     border-radius: 5px;
@@ -226,9 +214,9 @@ $articlecible = sql_select('ARTICLE', '*', "numArt = $numArt")[0];
     position: absolute;
     top: 15px;
     right: 170px;
-    width: 70px; /* Taille ajustable */
+    width: 70px; 
     height: auto;
-    opacity: 0.9; /* Légère transparence */
+    opacity: 0.9; 
 }
 
 </style>

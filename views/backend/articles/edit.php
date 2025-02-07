@@ -26,14 +26,12 @@ if(isset($_GET['numArt'])){
 }
 ?>
 
-<!-- Formulaire de modification de l'article -->
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <h1>Modification Article</h1>
         </div>
         <div class="col-md-12">
-            <!-- Formulaire de modification de l'article -->
             <form action="<?php echo ROOT_URL . '/api/articles/update.php' ?>" method="post" id="form" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="numArt">Numéro d'article</label>
@@ -77,7 +75,6 @@ if(isset($_GET['numArt'])){
                 </div>
                 <br>
 
-                <!-- Sélecteur pour choisir la thématique de l'article -->
                 <div class="form-group">
                     <label for="numThem">Thématique</label>    
                     <select class="form-select" name="numThem">
@@ -90,7 +87,6 @@ if(isset($_GET['numArt'])){
                 </div>
                 <br>
 
-<!-- Choix des mots-clés -->
 <div class="form-group">
                     <label>Choisissez les mots-clés liés à l'article :</label>
                     <div class="row">
@@ -128,7 +124,6 @@ if(isset($_GET['numArt'])){
                     </script>
                 </div>
 
-                <!-- Bouton de soumission -->
                 <div class="form-group mt-2">
                     <a href="list.php" class="btn btn-primary">Liste</a>
                     <button type="submit" class="btn btn-success">Confirmer update ?</button>

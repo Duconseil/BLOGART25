@@ -19,19 +19,15 @@ if (isset($_GET['numCom'])) {
 }
 ?>
 
-<!-- Bootstrap form to create a new statut -->
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <!-- Title aligned to the left -->
             <h1 class="text-left">Contrôle commentaire en attente : à valider</h1>
             <br>
         </div>
         <div class="col-md-12">
-            <!-- Form to create a new statut -->
             <form action="<?php echo ROOT_URL . '/api/comments/update.php'; ?>" method="post">
 
-                <!-- Article Title -->
                 <div class="form-group">
                     <label for="libTitrArt"><h2>Titre de l'article</h2></label>
                     <input id="numCom" name="numCom" class="form-control" style="display: none" type="text" value="<?php echo ($numCom); ?>" readonly="readonly" />
@@ -39,7 +35,6 @@ if (isset($_GET['numCom'])) {
                 </div>
                 <br>
 
-                <!-- Comment Information -->
                 <div class="form-group">
                     <label for="pseudoMemb"><h2>Information commentaire</h2></label>
                     <p><strong>Nom d'utilisateur :</strong></p>
@@ -50,14 +45,12 @@ if (isset($_GET['numCom'])) {
                 </div>
                 <br>
 
-                <!-- Comment Content -->
                 <div class="form-group">
                     <label for="libCom"><h2>Contenu du commentaire</h2></label>
                     <textarea id="libCom" name="libCom" class="form-control" rows="6" readonly="readonly"><?php echo ($libCom); ?></textarea>
                 </div>
                 <br>
 
-                <!-- Validation Section -->
                 <div class="form-group">
                     <label for="attModOK"><h2>Validation du commentaire</h2></label> 
                     <br>
@@ -71,7 +64,6 @@ if (isset($_GET['numCom'])) {
                 </div>
                 <br>
 
-                <!-- Refusal Reason -->
                 <div class="form-group">
                     <label for="notifComKOAff"><h2>Raison du refus</h2></label>
                     <p>A remplir seulement si le commentaire est refusé</p>
@@ -79,7 +71,6 @@ if (isset($_GET['numCom'])) {
                 </div>
                 <br>
 
-                <!-- Action buttons -->
                 <div class="form-group mt-3">
                     <a href="list.php" class="btn btn-primary">List</a>
                     <button type="submit" class="btn btn-warning" style="color: white;">Confirmer Edit ?</button>

@@ -5,16 +5,13 @@ if (isset($_GET['numMemb'])) {
     $numMemb = $_GET['numMemb'];
     $likeInfo = sql_select("likeart", "*", "numMemb = $numMemb");
     
-    // Récupérer les informations de l'article lié à ce like
     if (!empty($likeInfo)) {
         $numArt = $likeInfo[0]['numArt'];
-        $numMemb = $likeInfo[0]['numMemb']; // numMemb 1 pour like, 0 pour unlike
+        $numMemb = $likeInfo[0]['numMemb'];
 
-        // Récupérer le nom du membre
         $membreInfo = sql_select("MEMBRE", "pseudoMemb", "numMemb = $numMemb");
         $membreNom = $membreInfo[0]['pseudoMemb'];
 
-        // Récupérer le titre de l'article
         $articleInfo = sql_select("ARTICLE", "libTitrArt", "numArt = $numArt");
         $articleTitre = $articleInfo[0]['libTitrArt'];
     }

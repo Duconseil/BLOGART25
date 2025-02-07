@@ -1,7 +1,6 @@
 <?php
-include '../../../header.php'; // contains the header and call to config.php
+include '../../../header.php'; 
 
-// Load all articles with the related thematique
 $articles = sql_select('ARTICLE INNER JOIN THEMATIQUE ON article.numThem = thematique.numThem', '*');
 ?>
 

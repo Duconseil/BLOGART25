@@ -2,7 +2,6 @@
 include '../../../header.php';
 
 $errorMessage = '';
-// Vérification de l'existence d'une erreur dans l'URL
 if (isset($_GET['error'])) {
     if ($_GET['error'] == 'empty') {
         $errorMessage = '<div class="alert alert-danger">Le mot-clé ne peut pas être vide.</div>';
@@ -10,7 +9,6 @@ if (isset($_GET['error'])) {
 }
 ?>
 
-<!-- Bootstrap form to create a new thématique -->
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -18,7 +16,6 @@ if (isset($_GET['error'])) {
         </div>
         <div class="col-md-12">
             <?php echo $errorMessage; ?>
-            <!-- Form to create a new thématique -->
             <form action="<?php echo ROOT_URL . '/api/thematiques/create.php' ?>" method="post">
                 <div class="form-group">
                     <label for="libThem">Nom de la thématique</label>

@@ -1,14 +1,12 @@
 <?php
 require_once 'config.php';
 
-// Vérifier si la session n'est pas déjà active avant de la démarrer
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-// Vérifier si l'utilisateur est connecté et si la session contient les informations nécessaires
 $pseudo =  $_SESSION['pseudo'] ?? null;
-$numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non défini
+$numStat = $_SESSION['statut'] ?? null;  
 ?>
 
 <!DOCTYPE html>
@@ -18,10 +16,8 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Blog'Art</title>
 
-    <!-- Load CSS -->
     <link rel="stylesheet" href="/src/css/style.css" />
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" 
             integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" 
             crossorigin="anonymous" />
@@ -33,19 +29,16 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
 <nav class="navbar navbar-expand-lg bg-light">
     <div class="container-fluid">
         
-        <!-- Logo -->
         <a class="navbar-brand" href="#">
             <img src="/src/images/Retroscope.png" alt="Blog'Art 25" style="height: 60px; width: auto;">
         </a>
 
-        <!-- Bouton pour mobile -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
                 data-bs-target="#navbarNav" aria-controls="navbarNav" 
                 aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Liens de navigation -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -62,7 +55,6 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
                 </li>
             </ul>
             
-            <!-- Sous-menu caché par défaut -->
             <ul class="navbar-nav menu-open">
                 <li class="nav-item">
                     <a class="nav-link" href="/views/frontend/evenement.php?numArt=3">Insolite n°1</a>
@@ -73,22 +65,18 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
             </ul>
         </div>
 
-        <!-- Zone de droite -->
         <div class="d-flex align-items-center">
             
-            <!-- Barre de recherche -->
             <form class="d-flex me-2" role="search">
                 <input class="form-control me-2" type="search" placeholder="Rechercher sur le site…" aria-label="Search">
             </form>
 
-            <!-- Si l'utilisateur est connecté -->
             <?php if ($pseudo): ?>
                 <div class="d-flex align-items-center me-3">
                     <span class="ms-2 fw-bold"><?php echo htmlspecialchars($pseudo); ?></span>
                 </div>
                 <a class="btn btn-danger m-1" href="/api/security/disconnect.php" role="button">Déconnexion</a>
 
-                <!-- Afficher le bouton Admin seulement si l'utilisateur n'est pas un membre (numStat != 3) -->
                 <?php if ($numStat !== 3): ?>
                     <a class="btn btn-primary" href="http://localhost:8888/views/backend/dashboard.php" role="button">Admin</a>
                 <?php endif; ?>
@@ -101,7 +89,6 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
     </div>
 </nav>
 
-<!-- Scripts Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" 
         integrity="sha384-ho+j7jyWK8fNQe+A12Kw1Wrh/tb6SVkzF6FA5Hq5j5jzgFgnxP/1R" 
         crossorigin="anonymous"></script>
@@ -111,11 +98,10 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
         const openMenu = document.getElementById('open-menu');
         const menu = document.querySelector('.menu-open');
 
-        // Cacher le menu au chargement de la page
         menu.style.display = "none";
 
         openMenu.addEventListener('click', (event) => {
-            event.preventDefault(); // Empêche le lien de recharger la page
+            event.preventDefault(); 
             if (menu.style.display === "none") {
                 menu.style.display = "flex";
             } else {
@@ -160,9 +146,9 @@ $numStat = $_SESSION['statut'] ?? null;  // Récupérer numStat ou null si non d
     /* Caché par défaut */
     .menu-open {
         display: none;
-        flex-direction: row; /* Affiche les éléments horizontalement */
-        gap: 15px; /* Espacement entre les éléments */
-        align-items: center; /* Aligner verticalement */
+        flex-direction: row; 
+        gap: 15px; 
+        align-items: center; 
         margin-left: 15px;
     }
 

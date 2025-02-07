@@ -6,7 +6,6 @@ include '../../header.php';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    // Récupération des données POST et assainissement
     $numMemb    = isset($_POST['numMemb'])    ? ctrlSaisies($_POST['numMemb'])    : null;
     $prenomMemb = isset($_POST['prenomMemb']) ? ctrlSaisies($_POST['prenomMemb']) : null;
     $nomMemb    = isset($_POST['nomMemb'])    ? ctrlSaisies($_POST['nomMemb'])    : null;
@@ -18,7 +17,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $errors = [];
 
-    // Vérification de l'existence de l'ID membre
     if (!$numMemb) {
         $errors[] = "ID du membre manquant.";
     } else {
@@ -31,24 +29,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 
-    // Validation et mise à jour du mot de passe si renseigné
-    // Si le champ mot de passe est vide, on ne modifie pas le mot de passe existant
     if (!empty($passMemb) || !empty($passMemb2)) {
-        // Vérifier la complexité du mot de passe
         if (!preg_match('/[A-Z]/', $passMemb) || !preg_match('/[a-z]/', $passMemb) || !preg_match('/[0-9]/', $passMemb)) {
             $errors[] = "Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre.";
         }
-        // Vérifier la confirmation du mot de passe
         if ($passMemb !== $passMemb2) {
             $errors[] = "Les mots de passe doivent être identiques.";
         }
-        // Si aucune erreur, hacher le nouveau mot de passe
         if (empty($errors)) {
             $hash_password = password_hash($passMemb, PASSWORD_DEFAULT);
         }
     }
 
-    // Validation de l'adresse email
     if (!filter_var($eMailMemb, FILTER_VALIDATE_EMAIL)) {
         $errors[] = "$eMailMemb n'est pas une adresse mail valide.";
     }
@@ -63,12 +55,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $numStat = $currentStat; // On garde l'ancien statut
     }
 
-    // Si aucune erreur, mise à jour du membre
     if (empty($errors) && isset($numMemb, $prenomMemb, $nomMemb, $eMailMemb, $numStat)) {
 
-        // Construire la chaîne de mise à jour
-        // On met à jour les champs prénom, nom, email et statut.
-        // Le mot de passe est mis à jour seulement s'il a été renseigné
         if (isset($hash_password)) {
             $updateFields = "prenomMemb = '$prenomMemb', nomMemb = '$nomMemb', passMemb = '$hash_password', eMailMemb = '$eMailMemb', numStat = '$numStat'";
         } else {
@@ -82,7 +70,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 ?>
 
-<!-- Affichage des erreurs le cas échéant -->
 <div class="container">
     <div class="row">
         <div class="col-md-12">

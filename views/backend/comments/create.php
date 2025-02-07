@@ -1,33 +1,27 @@
 <?php
-// Inclure le fichier header où session_start() est appelé
 include '../../../header.php';
-require_once '../../../config.php'; // Assurez-vous que ce fichier est bien inclus
+require_once '../../../config.php';
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['pseudo'])) {
     echo "<p>Vous devez être connecté pour accéder à cette page.</p>";
-    exit; // Arrête l'exécution de la page si l'utilisateur n'est pas connecté
+    exit; 
 } else {
-    // Débogage pour voir si l'utilisateur est connecté et ce que contient la session
-    //echo "<p>Session active. ID utilisateur : " . $_SESSION['id'] . "</p>"; // Affiche l'ID utilisateur
+    //echo "<p>Session active. ID utilisateur : " . $_SESSION['id'] . "</p>"; 
 }
 
-// Vérification des constantes SQL
 if (!defined('SQL_HOST') || !defined('SQL_USER') || !defined('SQL_PWD') || !defined('SQL_DB')) {
     die("Erreur : Les constantes de connexion à la base de données ne sont pas définies dans config.php.");
 }
 
-// Connexion à la base de données via PDO
 $dsn = "mysql:host=" . SQL_HOST . ";dbname=" . SQL_DB . ";charset=utf8";
 
 try {
-    // Connexion à la base de données
     $pdo = new PDO($dsn, SQL_USER, SQL_PWD, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
     ]);
 
-    // Récupération des articles
     $stmt = $pdo->prepare("SELECT numArt, libTitrArt FROM article ORDER BY dtCreaArt DESC");
     $stmt->execute();
     $articles = $stmt->fetchAll();
@@ -35,11 +29,9 @@ try {
     die("Erreur de connexion à la base de données : " . $e->getMessage());
 }
 
-// Vérification de l'ID d'article si présent pour afficher les commentaires spécifiques
 $articleTitle = 'Choisissez un article';
 $articleId = isset($_GET['numArt']) ? (int)$_GET['numArt'] : 0;
 
-// Récupération des commentaires en attente de validation pour l'article spécifique
 $comments = [];
 if ($articleId > 0) {
     try {
@@ -62,10 +54,8 @@ if ($articleId > 0) {
     }
 }
 
-// Récupérer les informations du membre connecté
-$numMemb = $_SESSION['id']; // L'ID du membre connecté
+$numMemb = $_SESSION['id']; 
 try {
-    // Récupérer les informations du membre à partir de la base de données
     $stmt = $pdo->prepare("SELECT pseudoMemb, prenomMemb, nomMemb FROM membre WHERE numMemb = :numMemb");
     $stmt->bindParam(':numMemb', $numMemb, PDO::PARAM_INT);
     $stmt->execute();
@@ -82,7 +72,6 @@ try {
             <h1>Création d'un nouveau commentaire</h1>
         </div>
         <div class="col-md-12">
-            <!-- Formulaire pour créer un commentaire -->
             <form action="<?php echo ROOT_URL . '/api/comments/create.php'; ?>" method="post">
                 <input id="numMemb" name="numMemb" class="form-control" style="display: none;" value="<?php echo $numMemb ?>" readonly="readonly" type="text" autofocus="autofocus" />
                 

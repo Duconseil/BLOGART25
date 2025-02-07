@@ -2,7 +2,6 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
-// Fonction BBCode
 function BBCode($text) {
     $search = [
         '/\[b\](.*?)\[\/b\]/is',
@@ -21,7 +20,6 @@ function BBCode($text) {
     return preg_replace($search, $replace, $text);
 }
 
-// Vérification et sécurisation des données POST
 $dtCreaArt = ctrlSaisies($_POST['dtCreaArt'] ?? '');
 $dtMajArt = date("Y-m-d H:i:s");
 $libTitrArt = ctrlSaisies($_POST['libTitrArt'] ?? '');
@@ -37,7 +35,6 @@ $numArt = ctrlSaisies($_POST['numArt'] ?? '');
 $numThem = ctrlSaisies($_POST['numThem'] ?? '');
 $numMotCle = $_POST['motCle'] ?? [];
 
-// Vérification et gestion du fichier image
 $nom_image = '';
 if (!empty($_FILES['urlPhotArt']['name'])) {
     $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/';
@@ -52,7 +49,6 @@ if (!empty($_FILES['urlPhotArt']['name'])) {
     }
 }
 
-// Préparation de la requête SQL
 $set_art = "dtMajArt = '$dtMajArt',
             libTitrArt = '$libTitrArt',
             libChapoArt = '$libChapoArt',
@@ -72,17 +68,13 @@ if (!empty($nom_image)) {
 $where_num = "numArt = '$numArt'";
 $table_art = "ARTICLE";
 
-// Mise à jour des informations de l'article
 sql_update($table_art, $set_art, $where_num);
 
-// Suppression des anciens mots-clés associés à l'article
 sql_delete('MOTCLEARTICLE', $where_num);
 
-// Ajout des nouveaux mots-clés pour l'article
 foreach ($numMotCle as $mot) {
     sql_insert('MOTCLEARTICLE', 'numArt, numMotCle', "$numArt, $mot");
 }
 
-// Redirection après mise à jour
 header('Location: ../../views/backend/articles/list.php');
 exit();

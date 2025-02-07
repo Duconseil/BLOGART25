@@ -1,7 +1,6 @@
 <?php
-include '../../../header.php'; // contains the header and call to config.php
+include '../../../header.php'; 
 
-// Charger les commentaires depuis la base de données
 $comments = sql_select("comment", "*");
 $articles = sql_select("article", attributs: "*");
 $membres = sql_select("membre", "*");
@@ -14,7 +13,6 @@ function getArticle($numArt) {
     return sql_select("article", "*", "numArt = $numArt")[0];
 }
 
-// Filter comments by status
 $commentsAttente = sql_select("comment", "*","dtModCom IS null");
 $commentsControle = sql_select("comment","*","dtModCom IS NOT null AND dellogiq=0");
 $commentsArchive = sql_select("comment","*","dtModCom IS NOT null AND dellogiq=1");
@@ -51,9 +49,7 @@ $commentsArchive = sql_select("comment","*","dtModCom IS NOT null AND dellogiq=1
                             <td><?= $comment['dtCreaCom']; ?></td>
                             <td><?= $comment['libCom']; ?></td>
                             <td>
-                                <!-- Lien pour le contrôle -->
                                 <a href="controle.php?numCom=<?= urlencode($comment['numCom']); ?>" class="btn-warning-custom">Control</a>
-                                <!-- Lien pour l'édition -->
                                 <a href="edit-attente-validation.php?numCom=<?= urlencode($comment['numCom']); ?>" class="btn-primary-custom">Edit</a>
                             </td>
                         </tr>
@@ -85,7 +81,6 @@ $commentsArchive = sql_select("comment","*","dtModCom IS NOT null AND dellogiq=1
                             <td><?= $comment['attModOK'] == 1 ? "OUI" : "NON"; ?></td>
                             <td><?= $comment['notifComKOAff']; ?></td>
                             <td>
-                                <!-- Lien pour l'édition -->
                                 <a href="edit-controle-modification.php?numCom=<?= urlencode($comment['numCom']); ?>" class="btn-primary-custom">Edit</a>
                             </td>
                         </tr>
@@ -117,7 +112,6 @@ $commentsArchive = sql_select("comment","*","dtModCom IS NOT null AND dellogiq=1
                             <td><?= $comment['attModOK'] == 1 ? "OUI" : "NON"; ?></td>
                             <td><?= $comment['notifComKOAff']; ?></td>
                             <td>
-                                <!-- Lien pour l'édition -->
                                 <a href="edit-suppression.php?numCom=<?= urlencode($comment['numCom']); ?>" class="btn-primary-custom">Edit</a>
                             </td>
                         </tr>
@@ -149,7 +143,6 @@ $commentsArchive = sql_select("comment","*","dtModCom IS NOT null AND dellogiq=1
                             <td><?= $comment['attModOK'] == 1 ? "OUI" : "NON"; ?></td>
                             <td><?= $comment['notifComKOAff']; ?></td>
                             <td>
-                                <!-- Lien pour la suppression physique -->
                                 <a href="delete.php?numCom=<?= urlencode($comment['numCom']); ?>" class="btn-danger-custom">Delete</a>
                             </td>
                         </tr>
@@ -163,10 +156,9 @@ $commentsArchive = sql_select("comment","*","dtModCom IS NOT null AND dellogiq=1
 </div>
 
 <style>
-    /* Include all the CSS from your provided style tag for customization */
     .btn-warning-custom {
         background-color: #f0ad4e;
-        color: white !important;  /* Ensure text stays white */
+        color: white !important;  
         border: none;
         padding: 10px 20px;
         text-decoration: none;
@@ -178,7 +170,7 @@ $commentsArchive = sql_select("comment","*","dtModCom IS NOT null AND dellogiq=1
     }
     .btn-primary-custom {
         background-color: #007bff;
-        color: white !important;  /* Ensure text stays white */
+        color: white !important;  
         border: none;
         padding: 10px 20px;
         text-decoration: none;
@@ -190,7 +182,7 @@ $commentsArchive = sql_select("comment","*","dtModCom IS NOT null AND dellogiq=1
     }
     .btn-danger-custom {
         background-color: #dc3545;
-        color: white !important;  /* Ensure text stays white */
+        color: white !important;  
         border: none;
         padding: 10px 20px;
         text-decoration: none;
@@ -202,8 +194,7 @@ $commentsArchive = sql_select("comment","*","dtModCom IS NOT null AND dellogiq=1
     }
     .btn-success-custom {
         background-color: #28a745;
-        color: white !important;  /* Ensure text stays white */
-        border: none;
+        color: white !important;  
         padding: 10px 20px;
         text-decoration: none;
         border-radius: 5px;

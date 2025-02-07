@@ -8,13 +8,10 @@ $isDeletable = true;
 if (isset($_GET['numThem'])) {
     $numThem = $_GET['numThem'];
     
-    // Récupérer le libellé de la thématique
     $libThem = sql_select("THEMATIQUE", "libThem", "numThem = $numThem")[0]['libThem'];
     
-    // Vérifier si des articles sont associés à cette thématique
     $articlesLinked = sql_select("ARTICLE", "COUNT(*) as count", "numThem = $numThem")[0]['count'];
     
-    // Si des articles sont associés, la suppression est interdite
     if ($articlesLinked > 0) {
         $isDeletable = false;
     }

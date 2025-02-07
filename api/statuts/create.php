@@ -4,7 +4,6 @@ require_once '../../functions/ctrlSaisies.php';
 
 $libStat = ctrlSaisies($_POST['libStat']);
 
-// Vérification si le champ est vide
 if (empty($libStat)) {
     header('Location: ../../views/backend/statuts/create.php?error=empty');
     exit;

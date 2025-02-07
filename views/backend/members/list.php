@@ -1,13 +1,5 @@
 <?php
-include '../../../header.php'; // Contient le header et l'appel à config.php
-
-/* Seulement si tu es admin ou modérateur, tu as accès à cette page
-if (!isset($_SESSION['numStat']) || !in_array($_SESSION['numStat'], [1, 2])) {
-    header('Location: ../../../index.php');
-    exit();
-}*/
-
-// Charger tous les membres avec leur statut
+include '../../../header.php'; 
 $members = sql_select("MEMBRE INNER JOIN STATUT ON MEMBRE.numStat = STATUT.numStat", "*");
 ?>
 
@@ -60,5 +52,5 @@ $members = sql_select("MEMBRE INNER JOIN STATUT ON MEMBRE.numStat = STATUT.numSt
 </div>
 
 <?php
-include '../../../footer.php'; // Contient le footer
+include '../../../footer.php';
 ?>

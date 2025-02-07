@@ -18,7 +18,6 @@ if (isset($_GET['numStat'])) {
             <h1>Modification Statut</h1>
         </div>
         <div class="col-md-12">
-            <!-- Form to update a statut -->
             <form action="<?php echo ROOT_URL . '/api/statuts/update.php'; ?>" method="post">
                 <div class="form-group">
                     <label for="libStat">Nom du statut</label>

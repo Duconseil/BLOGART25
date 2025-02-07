@@ -6,7 +6,7 @@ $recaptchaSecret = '6Lej580qAAAAAJJoCPyuzSi5-Hs-lFr9ylkq_oMD';
 include '../../../config/defines.php';
 
 try {
-    $dsn = "mysql:host=" . SQL_HOST . ";dbname=" . SQL_DB . ";port=" . (SQL_PORT ?? 3306);  // Utilisation du port, avec une valeur par défaut si non définie
+    $dsn = "mysql:host=" . SQL_HOST . ";dbname=" . SQL_DB . ";port=" . (SQL_PORT ?? 3306);  
     
     $DB = new PDO($dsn, SQL_USER, SQL_PWD);
     $DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -19,18 +19,15 @@ try {
 };
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Vérification du reCAPTCHA
     /*if (isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])) {
         $recaptchaResponse = $_POST['g-recaptcha-response'];
         
-        // Envoi de la requête de vérification à Google
         $url = 'https://www.google.com/recaptcha/api/siteverify';
         $data = [
             'secret' => $recaptchaSecret,
             'response' => $recaptchaResponse
         ];
 
-        // Utilisation de cURL pour vérifier la réponse
         $options = [
             'http' => [
                 'method' => 'POST',
@@ -42,11 +39,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $verify = file_get_contents($url, false, $context);
         $captchaSuccess = json_decode($verify)->success;
 
-        // Si le reCAPTCHA échoue
         if (!$captchaSuccess) {
             echo "<p style='color:red;'>La vérification reCAPTCHA a échoué. Veuillez réessayer.</p>";
         } else {*/
-            // Si reCAPTCHA validé, continuer avec l'enregistrement du compte
             if (!empty($_POST["pseudoMemb"]) && !empty($_POST["mot_de_passe"]) && !empty($_POST["mot_de_passe_confirm"]) &&
                 !empty($_POST["prenom"]) && !empty($_POST["nom"]) && !empty($_POST["eMailMemb"]) && !empty($_POST["eMailMemb_confirm"])) {
 
@@ -229,7 +224,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         background-color: #4cae4c;
     }
 
-    /* CSS pour centrer le reCAPTCHA */
     .recaptcha-container {
         display: flex;
         justify-content: center;

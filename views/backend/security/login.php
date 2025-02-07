@@ -1,6 +1,5 @@
 <?php
 ob_start();
-// Inclure le fichier de connexion ou initialisation de la base de données
 include '../../../header.php';
 
 global $DB;
@@ -76,7 +75,6 @@ if ($connexion && $connexion[0]) {
     </div>
 
     <?php
-    // Vérification de l'authentification et de l'affichage du bouton Admin
     if (isset($_SESSION['pseudoMemb']) && $_SESSION['numStat'] != 3) {
         echo '<button class="admin-button"><a href="admin_dashboard.php">Accéder à l\'Admin</a></button>';
     }

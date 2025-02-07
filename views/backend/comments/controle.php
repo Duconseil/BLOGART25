@@ -10,14 +10,12 @@ if(isset($_GET['numCom'])){
 }
 ?>
 
-<!-- Bootstrap form to create a new comment -->
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <h1>Contrôle commentaire en attente : à valider</h1><br>
         </div>
         <div class="col-md-12">
-            <!-- Form to create a new comment -->
             <form action="<?php echo ROOT_URL . '/api/comments/controle.php' ?>" method="post">
                 <div class="form-group">
                 <input id="numCom" name="numCom" class="form-control" style="display: none;" value="<?php echo $numCom ?>"readonly="readonly" type="text" autofocus="autofocus" />

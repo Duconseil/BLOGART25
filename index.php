@@ -10,7 +10,6 @@ $allarticles = sql_select('ARTICLE', '*', "numArt >= 1 AND numArt <= 4");
 
 ?>
 
-<!-- Afficher le message de bienvenue après une connexion réussie -->
 <?php
 if (isset($_GET['message']) && $_GET['message'] == 'connexion_reussie') {
     // Vérifiez si l'utilisateur est connecté
@@ -34,12 +33,9 @@ sql_connect();
     <meta name="author" content="" />
     <title>Blog d'articles - Rétroscope</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-    <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    <!-- Google fonts-->
     <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
-    <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/blogart25/styles.css" rel="stylesheet" />
 
     <style>
@@ -61,19 +57,19 @@ sql_connect();
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.4); /* Ajoute un voile sombre sur l’image de fond */
+            background: rgba(0, 0, 0, 0.4); 
         }
 
         .site-heading {
             position: relative;
-            z-index: 1; /* Assure que le texte est au-dessus du voile */
+            z-index: 1; 
             text-align: center;
         }
 
         .site-heading h1 {
             font-size: 3.5rem;
             color: #fff;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6); /* Ajoute un effet d'ombre au texte */
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6); 
         }
 
         .site-heading .subheading {
@@ -145,7 +141,7 @@ sql_connect();
 
 
         .insolite-articles {
-            flex: 2; /* Occupe 2/3 de l'espace */
+            flex: 2; 
         }
 
 
@@ -174,17 +170,6 @@ sql_connect();
             transform: scale(1.05);
         }
 
-        /* Style pour le logo dans la section Insolite */
-        .logo-insolite {
-            display: block;
-            margin-left: 50px; /* Centre le logo */
-            margin-right: auto; /* Centre le logo */
-            max-width: 120px; /* Ajuste la taille du logo si nécessaire */
-            height: auto; /* Conserver les proportions du logo */
-            margin-top: -35px; /* Ajoute de l'espace entre le titre et le logo */
-        }
-
-        /* Container de la section Insolite */
         .section-insolite {
             display: flex;
             align-items: center;
@@ -212,11 +197,9 @@ sql_connect();
         </div>
     </header>
 
-    <!-- Main Content-->
     <div class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
-                <!-- Articles Classiques -->
                 <?php foreach ($allarticles as $allarticle) : ?>
                 <div class="post-preview">
                     <a href="/views/frontend/evenement.php?numArt=<?php echo $allarticle['numArt']; ?>">
@@ -228,7 +211,6 @@ sql_connect();
                 </div>
                 <?php endforeach;?>
                 </div>
-                <!-- Pager -->
                 <div class="d-flex justify-content-end mb-4">
                     <a class="btn btn-primary text-uppercase" href="#!">Anciens posts →</a>
                 </div>
