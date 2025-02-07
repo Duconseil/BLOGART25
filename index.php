@@ -182,6 +182,10 @@ sql_connect();
 
 </head>
 
+<?php
+include 'cookie_popup.php';
+?>
+
 <body>
     <header class="masthead">
         <div class="container position-relative px-4 px-lg-5">
