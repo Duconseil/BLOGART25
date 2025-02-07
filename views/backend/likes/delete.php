@@ -8,14 +8,12 @@ if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
 }
 ?>
 
-<!-- Bootstrap form to delete a like -->
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <h1 class="titre text-center">Modération Like : Suppression</h1>
         </div>
         <div class="col-md-12">
-            <!-- Form to delete a like -->
             <form action="<?php echo ROOT_URL . '/api/likes/delete.php' ?>" method="post">
 
                 <div class="form-group">

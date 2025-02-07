@@ -14,7 +14,6 @@ if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
             <h1>Modification Like</h1>
         </div>
         <div class="col-md-12">
-            <!-- Form to edit like -->
             <form action="<?php echo ROOT_URL . '/api/likes/update.php' ?>" method="post">
                 <div class="form-group">
                     <label for="numArt">Numéro d'article</label>

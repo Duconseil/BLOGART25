@@ -2,14 +2,12 @@
 include '../../../header.php';
 ?>
 
-<!-- Bootstrap form to create a new like -->
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <h1>Création Nouveau Like</h1>
         </div>
         <div class="col-md-12">
-            <!-- Form to create a new like -->
             <form action="<?php echo ROOT_URL . '/api/likes/create.php' ?>" method="post">
                 <div class="form-group">
                     <label for="numArt">Article</label>
