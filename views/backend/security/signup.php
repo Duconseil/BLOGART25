@@ -133,12 +133,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="form-group">
                 <label for="mot_de_passe">Mot de passe</label>
                 <input type="password" id="mot_de_passe" name="mot_de_passe" placeholder="Mot de passe" minlength="8" maxlength="15" required>
+                <p>(8-15 caractères, une majuscule, une minuscule, un chiffre, un caractère spécial)</p>
                 <input type="checkbox" onclick="togglePassword('mot_de_passe')"> Afficher Mot de passe
             </div>
 
             <div class="form-group">
                 <label for="mot_de_passe_confirm">Confirmez Mot de passe</label>
                 <input type="password" id="mot_de_passe_confirm" name="mot_de_passe_confirm" placeholder="Confirmez Mot de passe" minlength="8" maxlength="15" required>
+                <p>(8-15 caractères, une majuscule, une minuscule, un chiffre, un caractère spécial)</p>
                 <input type="checkbox" onclick="togglePassword('mot_de_passe_confirm')"> Afficher Mot de passe
             </div>
 
@@ -149,6 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="radio" id="validnon" name="acceptedonnees" value="0" />
                         <label for="validnon">Je refuse</label><br> <br>
             </div>
+            
 
             <!-- reCAPTCHA -->
             <!--

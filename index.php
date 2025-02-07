@@ -8,6 +8,8 @@ $allarticles = sql_select('ARTICLE', '*');
 //var_dump($allarticle);
 
 
+
+
 ?>
 
 <?php
